@@ -1,0 +1,10 @@
+# 1 "Test.idl"
+module myM {
+	struct myS {
+		boolean myB;
+	};
+	interface myI {
+		void myS();
+		void myC(in myM::myS myP);
+	};
+};

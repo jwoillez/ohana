@@ -1,0 +1,64 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/Tasks.idl,v $
+ * $Id: Tasks.idl,v 1.2 2007/09/27 23:26:04 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Interface definition for task information structures.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002-2004, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:04 $
+ */
+
+#ifndef INC_RTC_TASK_IDL
+#define INC_RTC_TASK_IDL
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+
+module RTC {
+  module Tasks {
+
+    /**
+     *  Basic information about a task
+     */
+    struct TaskInfo {
+      long mId;           ///< task id
+      string mName;       ///<  task name
+      long mPriority;     ///<  task priority
+      long mStatus;       ///<  task status
+      long mOptions;      ///<  task options
+      long mEntryPoint;   ///<  task entry point
+      long mStackSize;    ///<  task stack size
+      long mStackCurrent; ///<  task current stack position
+      long mStackHigh;    ///<  task stack high point
+      long mStackMargin;  ///<  task stack margin
+      long mErrorStatus;  ///<  task error status
+      long mDelay;        ///<  task delay
+    };
+
+    /**
+     *  Periodic task information
+     */
+    struct PeriodicTaskInfo {
+        TaskInfo mBasic;      ///< Basic task information
+        double mRate;        ///< Periodic task rate (Hz)
+        long long mOffset; ///< Periodic task offset (nano seconds)
+        boolean mEnabled;    ///< Periodic task enable/disable
+        long mStarvation;    ///< Number of times the periodic task has starved
+    };
+
+    /// Sequence (CORBA list) of task info items
+    typedef sequence<TaskInfo> TaskInfoSequenceType;
+    /// Sequence (CORBA list) of task info sequences
+    typedef sequence<PeriodicTaskInfo> PeriodicTaskInfoSequenceType;
+  };
+};
+
+#endif
