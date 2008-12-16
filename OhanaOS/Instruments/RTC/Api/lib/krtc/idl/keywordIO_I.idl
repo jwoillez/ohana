@@ -1,0 +1,53 @@
+/*********************************************************************
+	Rhapsody	: 4.1 
+	Login		: ljreder
+	Component	: target_SOLARIS 
+	Configuration 	: targetSOLARIS
+	Model Element	: keywordIO_I
+//!	Generated Date	: Tue, 3, Jun 2003  
+	File Path	: G:\kss\if\seq\0-2-8-1\src/KeywordIOManager/keywordIO_I.idl
+*********************************************************************/
+/*
+ * $RCSfile: keywordIO_I.idl,v $
+ * $Revision: 1.1.2.5 $
+ * $Date: 2004/08/02 18:48:12 $
+ */
+
+#ifndef KeywordIOManager_keywordIO_I_CORBA_IDL
+#define KeywordIOManager_keywordIO_I_CORBA_IDL
+
+#define _OMFLAT_IMPLEMENTATION  1
+
+#include "CORBACommandable_I.idl"
+
+//## package KeywordIOManager 
+
+//----------------------------------------------------------------------------
+// KeywordIOManager/keywordIO_I.idl                                                                  
+//----------------------------------------------------------------------------
+
+module keywordIOModule {
+  interface keywordIO_I : CORBACommandableModule::CORBACommandable_I {
+    // This List method prints all the keywords that are open and connected.
+    //## operation List() 
+    void List();
+    //## operation Modify(string,string,string) 
+    void Modify(in string service, in string keyword, in string value);
+    //## operation Monitor(string,string) 
+    void Monitor(in string service, in string keyword);
+    //## operation Show(string,string) 
+    string Show(in string service, in string keyword);//  Interface Attributes
+
+  };
+  typedef sequence<keywordIO_I> keywordIO_ISeq;
+};
+
+module Manager {
+  struct KeywordValue {
+    string Value;
+    string DataType;
+  };
+  typedef sequence<KeywordValue> KeywordValueSequence;
+};
+
+#endif // KeywordIOManager_keywordIO_I_CORBA_IDL

@@ -1,0 +1,57 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/Name.idl,v $
+ * $Id: Name.idl,v 1.2 2007/09/27 23:26:01 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * The interface definitions for RTC::NameType structures.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:01 $
+ */
+
+#ifndef INC_RTC_NAME_IDL
+#define INC_RTC_NAME_IDL
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "Destructible.idl"
+
+module RTC {
+
+  /// List of strings to fully qualify a named entity
+  typedef sequence<string> NameType;
+
+  /// List of names
+  typedef sequence<NameType> NameSequenceType;
+
+  /**
+   * A CORBA-style iterator for obtaining lists of names
+   */
+  interface NameIterator : Destructible {
+
+    /**
+     * Get the next name.
+     * @param Name The next name
+     * @return 0 if no more names 1 if more names
+     */
+    boolean NextOne(out NameType Name);
+
+    /**
+     * Get the next N names.
+     * @param N The maximum amount of names that the user can handle
+     * @param Names List of the next available names
+     * @return 0 if no more names 1 if more names
+     */
+    boolean NextN(in unsigned long N, out NameSequenceType Names);
+  };
+};
+
+
+#endif

@@ -1,0 +1,47 @@
+/*
+ * $RCSfile: KeywordIO.idl,v $
+ * $Revision: 1.1.2.2 $
+ * $Date: 2005/05/05 19:02:17 $
+ */
+
+/**
+ * @file
+ * Interface definition for the CORBA/keyword bridge
+ *
+ * @author L. J. Reder
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002-2004, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.1.2.2 $
+ * @date $Date: 2005/05/05 19:02:17 $
+ */
+
+#ifndef INC_KeywordIO
+#define INC_KeywordIO
+
+#pragma prefix "keck.jpl.nasa.gov"
+
+module KeywordIOModule {
+  /**
+   * @interface KeywordIOModule::keywordIO KeywordIO.idl KeywordIOC.h
+   * @brief The CORBA interface to the CORBA/keyword bridge
+   *
+   * The CORBA interface to the CORBA/keyword bridge. This interface
+   * provides a way for CORBA clients to inject keyword values into
+   * the Keck keyword system.
+   */
+  interface keywordIO {
+    /**
+     * This function provides the main access to the keyword system.
+     * The values provided will be applied directly to the keyword
+     * system using the keyword API.
+     * @param service The keyword service to request.
+     * @param keyword The keyword the client wants to modify.
+     * @param value The value that the client wants the keyword updated to.
+     */
+    void Modify(in string service, in string keyword, in string value);
+  };
+};
+
+#endif // INC_KeywordIO

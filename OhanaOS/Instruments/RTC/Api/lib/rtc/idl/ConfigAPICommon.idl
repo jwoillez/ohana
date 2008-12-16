@@ -1,0 +1,92 @@
+/**
+ * $RCSfile: ConfigAPICommon.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:56 $
+ */
+
+/**
+ * @file
+ * The definitions of common types as well as the ItemIterator interface.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:56 $
+ */
+
+#ifndef INC_CONFIGSERVER_COMMON_IDL
+#define INC_CONFIGSERVER_COMMON_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module RTC {
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+
+    /**
+     * Handle to a ConfigAPI object, identifies the specific reference
+     * and therefor the originator to whom process and status should be sent.
+     */
+    typedef string ConfigAPIObjectHandle;
+
+    /**
+     * Handle to a server task, used for stopping, pausing, or restarting a
+     * running task.
+     */
+    typedef long long ConfigTaskHandle;
+
+    /**
+     * List of strings, usually names or messages.
+     */
+    typedef sequence<string> StringList;
+
+    /**
+     * List of any.
+     */
+    typedef sequence<any> ItemList;
+
+    /**
+     * Implements an optional Any item. If the sequence
+     * is zero-length, it is intepreted as a null value; if the length is one
+     * or more, first item assumed to be the meaningful Any, and all others
+     * are ignored.
+     */
+    typedef sequence<any> AnyOrNull;
+
+    /**
+     * Iterator for acquiring possibly long lists of items.
+     */
+    interface ItemIterator {
+      boolean nextN(in long n, out ItemList item_list);
+      oneway void destroy();
+    };
+
+    /**
+     * Iterator for acquiring possibly long lists of items.
+     */
+    interface StringIterator {
+      boolean nextN(in long n, out StringList string_list);
+      oneway void destroy();
+    };
+
+    struct PropertyValue {
+      string key;
+      string value;
+    };
+
+    /// Sequence of properties
+    typedef sequence<PropertyValue> Properties;
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+#endif //INC_CONFIGSERVER_COMMON_IDL
+

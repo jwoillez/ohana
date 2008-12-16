@@ -1,0 +1,27 @@
+
+#ifndef INC_MYGIZMO_IDL
+#define INC_MYGIZMO_IDL
+
+
+#include <RTCCore.idl>
+
+/* pragma always comes after the RTC idl or it will break some things */
+#pragma prefix "keck.jpl.nasa.gov"
+
+module MyGizmoModule {
+
+  interface MyGizmo : RTCCore::RTCObject {
+
+    void Idle();
+
+    void Track();
+
+    void Slew();
+ 
+    void SetRate(in long  Partition, in double Rate);
+
+  };
+
+};
+
+#endif // INC_MYGIZMO_IDL
