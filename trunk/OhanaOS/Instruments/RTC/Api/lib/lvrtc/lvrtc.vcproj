@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="lvrtc"
 	ProjectGUID="{4386F72A-0E2D-45FA-8E20-90117EBBF6A7}"
+	RootNamespace="lvrtc"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -96,6 +97,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="cp $(TargetPath) $(SolutionDir)."
 			/>
 		</Configuration>
 		<Configuration
@@ -178,6 +180,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="cp $(TargetPath) $(SolutionDir)."
 			/>
 		</Configuration>
 	</Configurations>
