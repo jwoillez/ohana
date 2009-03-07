@@ -16,6 +16,10 @@ namespace LV
 		int Idle(void);
 		int SetCommandOffset(double offset);
 		int ServoAlignRaster(long channel, long goToPeak, double *xOffset, double *yOffset);
+		int CalibrateBright(long seconds);
+		int CalibrateRatio(long seconds);
+		int CalibrateRatio2(long seconds);
+        int CalibrateDark(long seconds);
 	private:
 		FringeTrackerModule::FringeTracker_var		mFringeTracker;
 	};

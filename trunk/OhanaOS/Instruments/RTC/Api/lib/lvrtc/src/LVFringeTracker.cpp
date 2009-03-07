@@ -56,3 +56,31 @@ int LV::FringeTracker::SetCommandOffset(double offset)
 	catch(...) { if(omniORB::traceLevel) DbgPrintf("LVFringeTracker: cannot set command offset for Fringe Tracker"); return(ERROR); };
 	return(OK);
 };
+
+int LV::FringeTracker::CalibrateBright(long seconds)
+{
+	try { mFringeTracker->CalibrateBright(seconds); }
+	catch(...) { if(omniORB::traceLevel) DbgPrintf("LVFringeTracker: cannot calibrate bright for Fringe Tracker"); return(ERROR); };
+	return(OK);
+};
+
+int LV::FringeTracker::CalibrateRatio(long seconds)
+{
+	try { mFringeTracker->CalibrateRatio(seconds); }
+	catch(...) { if(omniORB::traceLevel) DbgPrintf("LVFringeTracker: cannot calibrate K1 ratio for Fringe Tracker"); return(ERROR); };
+	return(OK);
+};
+
+int LV::FringeTracker::CalibrateRatio2(long seconds)
+{
+	try { mFringeTracker->CalibrateRatio2(seconds); }
+	catch(...) { if(omniORB::traceLevel) DbgPrintf("LVFringeTracker: cannot calibrate K2 ratio for Fringe Tracker"); return(ERROR); };
+	return(OK);
+};
+
+int LV::FringeTracker::CalibrateDark(long seconds)
+{
+	try { mFringeTracker->CalibrateDark(seconds); }
+	catch(...) { if(omniORB::traceLevel) DbgPrintf("LVFringeTracker: cannot calibrate dark for Fringe Tracker"); return(ERROR); };
+	return(OK);
+};
