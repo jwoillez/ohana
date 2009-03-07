@@ -45,6 +45,10 @@ extern "C"
 	long DLLAPI FringeTracker_Idle             (LStrHandle fringeTrackerNameHdl);
 	long DLLAPI FringeTracker_SetCommandOffset (LStrHandle fringeTrackerNameHdl, double offset);
 	long DLLAPI FringeTracker_ServoAlignRaster (LStrHandle fringeTrackerNameHdl, long channel, long goToPeak, double *xOffset, double *yOffset);
+	long DLLAPI FringeTracker_CalibrateBright  (LStrHandle fringeTrackerNameHdl, long seconds);
+	long DLLAPI FringeTracker_CalibrateRatio   (LStrHandle fringeTrackerNameHdl, long seconds);
+	long DLLAPI FringeTracker_CalibrateRatio2  (LStrHandle fringeTrackerNameHdl, long seconds);
+	long DLLAPI FringeTracker_CalibrateDark    (LStrHandle fringeTrackerNameHdl, long seconds);
 
 	//DelayLine methodes
 	long DLLAPI DelayLine_Connect			(LStrHandle delayLineNameHdl);

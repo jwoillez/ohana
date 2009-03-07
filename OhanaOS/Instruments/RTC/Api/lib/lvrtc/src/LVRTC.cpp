@@ -377,6 +377,54 @@ long DLLAPI FringeTracker_ServoAlignRaster(LStrHandle fringeTrackerNameHdl, long
 	return(OK);
 }
 
+long DLLAPI FringeTracker_CalibrateBright(LStrHandle fringeTrackerNameHdl, long seconds)
+{
+	//Find the LVFringeTracker object associated with the given channel name
+	LV::FringeTracker *lvFringeTracker;
+	lvFringeTracker=lvFringeTrackerMap.find(LV::StringUtils::LStr2String(fringeTrackerNameHdl))->second;
+
+	//Idle FringeTracker
+	if(!lvFringeTracker->CalibrateBright(seconds)) return(ERROR);
+
+	return(OK);
+}
+
+long DLLAPI FringeTracker_CalibrateRatio(LStrHandle fringeTrackerNameHdl, long seconds)
+{
+	//Find the LVFringeTracker object associated with the given channel name
+	LV::FringeTracker *lvFringeTracker;
+	lvFringeTracker=lvFringeTrackerMap.find(LV::StringUtils::LStr2String(fringeTrackerNameHdl))->second;
+
+	//Idle FringeTracker
+	if(!lvFringeTracker->CalibrateRatio(seconds)) return(ERROR);
+
+	return(OK);
+}
+
+long DLLAPI FringeTracker_CalibrateRatio2(LStrHandle fringeTrackerNameHdl, long seconds)
+{
+	//Find the LVFringeTracker object associated with the given channel name
+	LV::FringeTracker *lvFringeTracker;
+	lvFringeTracker=lvFringeTrackerMap.find(LV::StringUtils::LStr2String(fringeTrackerNameHdl))->second;
+
+	//Idle FringeTracker
+	if(!lvFringeTracker->CalibrateRatio2(seconds)) return(ERROR);
+
+	return(OK);
+}
+
+long DLLAPI FringeTracker_CalibrateDark(LStrHandle fringeTrackerNameHdl, long seconds)
+{
+	//Find the LVFringeTracker object associated with the given channel name
+	LV::FringeTracker *lvFringeTracker;
+	lvFringeTracker=lvFringeTrackerMap.find(LV::StringUtils::LStr2String(fringeTrackerNameHdl))->second;
+
+	//Idle FringeTracker
+	if(!lvFringeTracker->CalibrateDark(seconds)) return(ERROR);
+
+	return(OK);
+}
+
 /*¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦*/
 //                       Delay Line methodes
 /*¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦*/
