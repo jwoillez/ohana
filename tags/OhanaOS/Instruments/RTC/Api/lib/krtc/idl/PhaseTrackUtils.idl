@@ -1,0 +1,83 @@
+#ifndef INC_PHASE_TRACK_UTILS_IDL
+#define INC_PHASE_TRACK_UTILS_IDL
+
+
+//#include <RTCCore.idl>
+//#include <Image.idl>
+//#include <Camera.idl>
+
+#pragma prefix "keck.jpl.nasa.gov"
+
+
+module PhaseTrackUtilsModule {
+    
+  /**
+   * @brief Structure containing wavelength, weight, and rotation angle 
+   * for each pixel.
+   */
+  struct SpectrometerStructure {
+/// wavelength in m
+      double dWavelength; 
+
+/// 0.0-1.0 weight given to the spectral channel
+      double dWeight;     
+
+    double dRotationAngle; 
+  };
+
+  /**
+   * @brief Dark calibration for N temporal reads of a pixel.
+   * The calibration changes with temporal sample due to reset transients
+   * on the detector
+   */
+
+  typedef sequence<double> DarkCalibration;
+
+    /**
+     * @brief List of wavelength values for each spectrometer pixel
+     */
+  typedef sequence<SpectrometerStructure> SPECTROMETER_STRUCTURES;
+  typedef sequence<SPECTROMETER_STRUCTURES> SPECTROMETER_STRUCTURES_LIST;
+
+    /**
+     * @brief This exists to meet the MSC ICD requirement not to have 
+     * telemetry that is a sequence of sequences.  
+     */
+  struct SpectrometerSequenceStruct {
+    SPECTROMETER_STRUCTURES Channels;
+  };
+
+  /**
+   * Sequence of the structure above.
+   */
+  typedef sequence<SpectrometerSequenceStruct> SPECTROMETER_SEQUENCE_STRUCT_LIST;
+
+
+    /**
+     * @brief Set of calibration samples for a single pixel
+     */
+  struct PixelCalibration {
+/// Dark calibration (dN)
+    DarkCalibration Dark; 
+
+    double dEBias;
+    double dEAltBias;
+
+/// Pixel gain (photons/dN)
+      double dK;            
+  };
+
+
+    /**
+     * @brief Set of Pixel calibrations for a whole spectrometer
+     */
+  typedef sequence<PixelCalibration> SpectrometerCalibration;
+
+    /**
+     * @brief Set of spectrometer calibrations (2) for the entire fringe 
+     * tracker
+     */
+  typedef sequence<SpectrometerCalibration> Calibration;
+
+};
+#endif // INC_PHASE_TRACK_UTILS_IDL

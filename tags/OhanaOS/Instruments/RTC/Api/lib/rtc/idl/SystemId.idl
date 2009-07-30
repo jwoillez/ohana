@@ -1,0 +1,52 @@
+/**
+ * @file
+ * The interface definition for the RTC System ID capability.
+ * @ingroup Servo
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:04 $
+ */
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module SystemId {
+
+  exception UnknownChannel {};
+
+  struct ComplexNumber {
+    double dReal;
+    double dImag;
+  };
+
+  typedef sequence<ComplexNumber> COMPLEX_NUMBER_LIST;
+
+  struct Spectrum {
+    double dSampleRate;
+    COMPLEX_NUMBER_LIST Data;
+  };
+
+  /**
+   * Interface to command a system excitation servant
+   * @ingroup Servo
+   */
+  interface Excitation {
+    void WhiteNoise (in double dAmplitude);
+    void Chirp (in double dAmplitude, in double dF0, in double dT1, in double dF1);
+  };
+
+  /**
+   * Interface to command a spectrum analyzer servant
+   * @ingroup Servo
+   */
+  interface SpectrumAnalyzer {
+    Excitation ExcitationChannel (in unsigned long uiChannel) raises (UnknownChannel);
+    Spectrum Analyze (in unsigned long uiExcitationChannel, in unsigned long uiResponseChannel,
+                      in double dSampleRate, in unsigned long uiSampleSize,
+                      in unsigned long uiAverages, in double dOverlap)
+      raises (UnknownChannel);
+  };
+};

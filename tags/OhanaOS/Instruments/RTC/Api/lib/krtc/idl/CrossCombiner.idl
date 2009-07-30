@@ -1,0 +1,452 @@
+/**
+ * @file:
+ * Interface definition for KRTC Cross Combiner.
+ * @author Jean Garcia
+ */
+
+
+#ifndef INC_CROSS_COMBINER_IDL
+#define INC_CROSS_COMBINER_IDL
+
+#include <RTCCore.idl>
+#include <Image.idl>
+#include <Camera.idl>
+#include <PhaseTrackUtils.idl>
+
+#pragma prefix "keck.jpl.nasa.gov"
+
+
+module CrossCombinerModule {
+  
+  /**
+   * @enum OPERATING_MODE 
+   * Basic operation modes of the cross combiner.
+   */
+
+  enum OPERATING_MODE {
+
+    /// Inactive mode
+    OM_NONE,
+
+    /// xc reads out full frame image.  not used.
+    OM_ALIGN, 
+
+    /// xc is in fringe tracking mode.
+    OM_ZABCD, 
+
+    /// xc performs servo functions for
+    /// differential phase measurements; not used.
+    OM_DP     
+  };
+  
+  typedef sequence<OPERATING_MODE> OPERATING_MODE_LIST;
+
+  /** 
+   * @enum SERVO_MODE
+   * XC servo modes.  Applicable in 
+   * operational mode OM_SERVO.  
+   */
+  enum SERVO_MODE { 
+    /// XC is idle  
+    SM_IDLE,      
+  
+    /// XC is performing a calibration
+    SM_CALIBRATE,  
+ 
+    /// XC is attempting to track the fringe
+    SM_TRACK,    
+   
+    /// XC is checking the alignment
+    SM_ALIGN,   
+    
+    // /not used 
+    SM_ALIGN_RASTER, 
+
+    /// not used
+    SM_THRESHOLD_CALIBRATE, 
+
+    /// not used
+    SM_CALIBRATE_BRIGHT, 
+
+    /// not used
+    SM_CALIBRATE_GD
+  };
+  
+  typedef sequence<SERVO_MODE> SERVO_MODE_LIST;
+
+  /** 
+   * @enum TRACK_MODE
+   * Submodes of the xc track servo mode.
+   * Applicable in servo mode SM_TRACK.
+   */
+  enum TRACK_MODE { 
+
+    /// XC is searching for a fringe
+    TM_DL_SEARCH,    
+
+    /// XC takes one big step towards central fringe
+    TM_DL_PRE_SEMI_LOCK,
+ 
+    /// XC verifying that a fringe was found
+    TM_DL_SEMI_LOCK, 
+
+    /// XC is locked on a fringe 
+    TM_DL_LOCK,      
+
+    /// PZT is tracking
+    TM_PZT_LOCK, 
+
+    /// not used
+    TM_DL_ERROR, 
+
+    /// all loops are locked.
+    TM_LOCKED 
+  };
+  
+  typedef sequence<TRACK_MODE> TRACK_MODE_LIST;
+
+  /** 
+   * @enum CALIBRATION_TAG
+   *
+   * Tags used to differentiate nuller data sets.  Applicable in operational mode OM_ZABCD
+   * and servo mode SM_CALIBRATE.
+   */
+  enum CALIBRATION_TAG {
+
+    /// Normal nuller data
+    CT_NONE,       
+
+    /// foreground calibration data, gated or continuous
+    CT_DARK,       
+
+    /// foreground calibration, null peak mode.
+    CT_DARK_NP,    
+
+    /// not used
+    CT_BRIGHT,   
+ 
+    /// not used
+    CT_BACKGROUND, 
+
+    /// not used
+    CT_FOREGROUND, 
+
+    /// not used
+    CT_RATIO,   
+    
+    /// not used
+    CT_RATIO2, 
+      
+    /// not used
+    CT_FRINGEDATA_PEAK, 
+
+    /// not used
+    CT_FRINGEDATA_NULL, 
+
+    /// not used
+    CT_FOREGROUND_NP 
+  };
+
+  /** 
+   * @enum FRINGEDATA_STATE
+   * Indicates that data is valid in current mode.
+   */
+  enum FRINGEDATA_STATE {
+
+//data valid in gated mode.
+    FRINGEDATA_ON, 
+
+//data not valid.
+    FRINGEDATA_OFF, 
+
+// not used
+    FRINGEDATA_NULLPEAK,
+ 
+// not used
+    FRINGEDATA_PEAKNULL, 
+
+//data valid in null peak mode.
+    FRINGEDATA_REALTIME_NP 
+  };
+
+  typedef sequence <FRINGEDATA_STATE> FRINGEDATA_STATE_LIST;
+  
+  typedef sequence<CALIBRATION_TAG> CALIBRATION_TAG_LIST;
+
+  /**
+   * @enum CONTROL_MODE
+   * Indicates current mode of servo.
+   */
+
+  enum CONTROL_MODE {
+    CM_SEPARATE,
+    CM_SEPARATE_NP,
+    CM_SUM_DIFF,
+    CM_SUM_DIFF_NP
+  };
+
+
+  typedef sequence <CONTROL_MODE> CONTROL_MODE_LIST;
+
+  enum TRACK_STATE {
+    TS_NONE,
+    TS_DL_LOCK,
+    TS_DATA_GOOD,
+    TS_DATA_GOOD_NP
+  };
+
+  typedef sequence <TRACK_STATE> TRACK_STATE_LIST;
+
+
+  /**
+   * @interface CrossCombiner
+   * @mainpage 
+   * The XC is a fringe tracking gizmo which stabilizes the path along
+   * the short baselines (i.e. K1 only or K2 only.)  When primary 
+   * and secondary nullers are on fringe, all shutters can be opened
+   * and XC will track fringes with a significant SNR2 boost.
+   * XC images are modulated by a triangle wave dither provided by
+   * a function generator.  XC commands delay lines 3 and 4 simultaneously.
+   */
+
+   /**
+   * @brief
+   * This interface contains all of the user level commands and enums for
+   * the XC gizmo.
+   */
+  interface CrossCombiner : CameraModule::CameraUser {
+
+    const double LOCK_FOREVER = -1.0;
+       
+    /** 
+     * @exception InvalidMode
+     * This exception is thrown when a command is issued that is not
+     * supported by the current operational mode   
+     */
+    exception InvalidMode {};
+    
+    /**
+     * @exception InvalidChannels
+     * An invalid set of wavelengths was passed.
+     */
+    exception InvalidChannels {};
+    exception InvalidCalibration {};
+    exception Aborted {};
+    
+    /** 
+     * Shuts down the XC servo or alignment tasks
+     */
+    void Off();
+    
+    /**
+     * Starts the XC servo or alignment tasks
+     */
+    void On();
+
+    /**
+     * Disables the XC servo or alignment tasks
+     */
+    void Disable();
+    
+    /** 
+     * Enables the XC servo or alignment tasks
+     */
+    void Enable();
+
+    /** 
+     * Idles XC servo (OM_ZABCD only)
+     */
+    void Idle() raises (InvalidMode);
+
+    /**
+     * Performs dark calibration for specified length of time. 
+     */
+    void CalibrateDark(in long iSeconds) 
+      raises (InvalidMode, Aborted);
+
+    /** 
+     * Performs null peak dark cal for specified length of time.
+     */
+    void CalibrateDarkNullPeak(in long iSeconds) 
+      raises (InvalidMode, Aborted);
+
+    void CalibrateBright (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateBackground (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateForeground (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateRatio (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateRatio2 (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateFringeDataPeak (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateFringeDataNull (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateForegroundNullPeak (in long iSeconds) raises (InvalidMode, Aborted);
+
+    void CalibrateGroupDelay (in long iSeconds) raises (InvalidMode, Aborted);
+
+    /** 
+     * Initiates fringe tracking
+     */
+    void Track() raises (InvalidMode);
+
+    /** 
+     * Informs XC of the size of the delay line stroke 
+     * (meters stellar OPD)
+     */
+    void SetStroke(in double dStroke);
+
+    /** 
+     * Sets a dc offset command to the command computed by the XC
+     * when performing closed loop control of the delay line 
+     * (meters stellar OPD).  This allows user to set a systematic offset to 
+     * reduce search times.
+     */
+    void SetDlCommandOffset(in double dOffset);
+    
+    /**
+     * Updates a dc offset command to the command computed by the fringe 
+     * tracker when performing closed loop control of the delay line.  
+     * The updated offset is based on the current offset and the last set of
+     * tracking offsets.
+     */
+    void UpdateDlCommandOffset();
+
+    /**
+     * Sets offset for PZT loop.
+     */
+    void SetPztCommandOffset(in double dOffset);
+
+    /** 
+     * Updates offset for PZT loop.
+     */
+    void UpdatePztCommandOffset();
+
+    /** 
+     * Sets the nominal wavelength for each pixel of each XC
+     * spectrometer channel. If the size of the spectrometers does not match 
+     * the currently selected camera waveform used by the nuller 
+     *  the InvalidChannels exception is raised
+     * @see CameraUser::SetWaveformProperties
+     */
+    void SetSpectrometerChannels(in PhaseTrackUtilsModule::SPECTROMETER_STRUCTURES_LIST SpectrometerData)
+      raises (InvalidChannels);
+      
+    void SetCalibration(in PhaseTrackUtilsModule::Calibration C)
+      raises (InvalidCalibration);
+
+    PhaseTrackUtilsModule::Calibration GetCalibration();
+
+    /** 
+     * Sends a delay line target of 0.
+     */
+    void ClearDlTarget ();
+
+    void CalibrateThresholds (in long Seconds);
+    void RestoreDefaultThresholds ();
+
+    /** 
+     * Clears all dark calibrations.
+     */
+    void ResetCalibration ();
+
+    /**
+     * Enables servo gate. 
+     */
+    void ServoGateOn ();
+
+    /**
+     * Disables servo gate.
+     */
+    void ServoGateOff ();
+
+    /** 
+     * Simulates a hold from FATCAT.
+     */
+    void Hold ();
+
+    /** 
+     * Releases simulated hold.
+     */
+    void ReleaseHold ();
+
+    /** 
+     * Enable "fringe data valid" flag.
+     */
+    void FringeDataOn ();
+
+    /** 
+     * Disable "fringe data valid" flag.
+     */
+    void FringeDataOff ();
+
+    void FringeDataNullPeak ();
+    void FringeDataPeakNull ();
+
+    /** 
+     * Enable "fringe data valid in null peak mode" flag.
+     */
+    void FringeDataRealTimeNP ();
+
+    /** 
+     * Enables sum/diff mode.
+     */
+    void CombineAllPhasorsOn ();
+
+    /** 
+     * Disables sum/diff mode.
+     */
+    void CombineAllPhasorsOff ();
+
+    /** 
+     * Enables DL slow triangle wave demodulation.
+     */
+    void DerotateDLOn ();
+
+    /** 
+     * Disables DL slow triangle wave modulation.
+     */
+    void DerotateDLOff ();
+
+    /** 
+     * Enables null peak mode.
+     */
+    void NullPeakOn ();
+
+    /** 
+     * Disables null peak mode.
+     */
+    void NullPeakOff ();
+
+    /** 
+     * Print dark calibration info to terminal.
+     */
+    void PrintEBiases ();
+
+   /**
+    * Enable internal feed forward.
+    */
+    void FeedForwardGateOn ();
+
+   /**
+    * Disable internal feed forward.
+    */
+    void FeedForwardGateOff ();
+
+   /**
+    * Enable PZT control.
+    */
+    void EnablePzt ();
+
+    /**
+     * Disable PZT control.
+     */
+    void DisablePzt ();
+
+    /**
+    * Manually hop a fringe.
+    */
+    void HopFringe ();
+
+
+  };
+
+};
+
+#endif // INC_CROSS_COMBINER_IDL

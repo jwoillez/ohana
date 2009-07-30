@@ -1,0 +1,154 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/ConfigurationManager.idl,v $
+ * $Id: ConfigurationManager.idl,v 1.2 2007/09/27 23:25:59 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Run-time configuration interface.
+ * Intended to be a built-in service for code requiring configuration.
+ * @ingroup Configuration
+ *
+ * @author Richard L. Johnson Jr.
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002-4, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:59 $
+ */
+
+#ifndef INC_RTC_CONFIGURATION_MANAGER_IDL
+#define INC_RTC_CONFIGURATION_MANAGER_IDL
+
+#include "Name.idl"
+#include "Service.idl"
+#include "Configuration.idl"
+#include "ConfigAPIBase.idl"
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module RTC {
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+
+    interface Visitor;
+    interface ConfigureVisitor;
+
+    /**
+     * Data for a configuration log entry.
+     */
+    struct LogElement {
+        RTC::NameType EntryName; ///< Name of the entry
+        any Value;               ///< Value of the entry
+        long long llTime;        ///< Time that the entry was changed
+    };
+
+    /// Sequence of log entries
+    typedef sequence<LogElement> LogType;
+    /// Sequence of sequences of log entries
+    typedef sequence<LogType> LogSequenceType;
+
+    /**
+     * Provide factory operations to create
+     * configuration visitors.
+     */
+    interface Manager : RTC::Service {
+      /// Configuration Manager service name
+      const string ServiceName = "ConfigurationManager";
+
+      /**
+       * Returns reference to a configure visitor object used to
+       * configure entries.
+       * @note Caller is responsible for destroying object when done.
+       * @param Api The configuration API providing the configuration data
+       * @param Workspace Configuration workspace to use
+       * @param ModuleName Name of the configuration module to use
+       * @return The ConfgureVisitor object
+       */
+      ConfigureVisitor Configure(in RTC::Configuration::ConfigAPIBase Api,
+                                 in string Workspace, in string ModuleName);
+    };
+
+
+    /**
+     * Generic configuration visitor interface.
+     * Defines basic exception types common to configuration visitors.
+     */
+    interface Visitor : RTC::Destructible {
+      /// Types of configuration errors.
+      enum ReasonType { DATABASE_ERROR, NODE_NOT_FOUND, TYPE_MISMATCH };
+
+
+      /// Error information specific to an entry name.
+      struct Error {
+          RTC::NameType EntryName; ///< Node name
+          ReasonType Reason;  ///< Error reason
+          string Message;
+          string Details;
+      };
+
+      /// List of errors.
+      typedef sequence<Error> ErrorListType;
+
+      /// Specified node is not found.
+      exception NotFound {};
+
+      /**
+       * Visitor operation was not completely successful.
+       * Details contains list of all errors and reasons for affected nodes.
+       */
+      exception Incomplete {
+        ErrorListType Details;
+      };
+    };
+
+
+    /**
+     * Specialized configuration visitor for re-configuring named nodes in
+     * the configuration object hierarchy.  This visitor allows users to
+     * set the configuration server to be used to re-configure objects on
+     * subsequent executions.  Users can specify the starting node and whether
+     * or not the configuration is to be recursive to all child
+     * sub-collections.
+     */
+    interface ConfigureVisitor : Visitor {
+      /**
+       * Perform re-configuration operation starting with each node specified
+       * in the NodeNames list.  Setting bRecursive to 1 indicates a recursive
+       * configuration for all starting nodes.
+       * @param NodeNames List of starting nodes to configure
+       * @param Recursive 0 if non-recursive 1 if recursive
+       * @throw Incomplete An error has made the configuration incomplete
+       */
+      void Execute(in RTC::NameSequenceType NodeNames,
+                   in boolean Recursive)
+        raises (Incomplete);
+    };
+
+
+    /**
+     * Specialized configuration visitor for acquiring a recursive structure
+     * containing the meta-data for each node in the configuration object
+     * hierarchy.
+     */
+    interface MetaDataVisitor : Visitor {
+      /**
+       * Returns a meta-data hierarchy staring with the specified node.
+       * @param NodeName The name of the starting node
+       * @throw NotFound Specified node does not exist
+       */
+      Hierarchy Execute(in RTC::NameType NodeName)
+        raises (NotFound);
+    };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+
+#endif // INC_RTC_CONFIGURATION_MANAGER_IDL

@@ -1,0 +1,103 @@
+/*
+ * $RCSfile: ConfigAPIUsers.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:58 $
+ */
+
+/**
+ * @file
+ * The interface definition for the ConfigAPIUser server.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:58 $
+ */
+
+#ifndef INC_CONFIGSERVER_API_USER_IDL
+#define INC_CONFIGSERVER_API_USER_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "ConfigAPICommon.idl"
+#include "ConfigAPIExceptions.idl"
+#include "ConfigAPIEnums.idl"
+
+module RTC {
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+
+    /**
+     * Defines operations mostly on queries.
+     */
+    interface ConfigAPIUsers
+    {
+      /**
+       * Add a userID to the set of users of this repository.
+       * @param authorizingUser userid of individual wishing to do the add
+       * @param authorizingUserPassword encrypted password of individual adding
+       * @param newUser userid of new user
+       * @param newUserPassword password of new user
+       * @param newUserCategory sets the user-category of the user
+       */
+      void addUser
+        (in string authorizingUser,
+         in string authorizingUserPassword,
+         in string newUser,
+         in string newUserPassword,
+         in UserCategory newUserCategory)
+          raises (ConfigAPIException, TaskKilledException);
+
+      /**
+       * Delete a userID to the set of authorized users of this repository.
+       * @param authorizingUser userid of individual wishing to do the add
+       * @param authorizingUserPassword encrypted password of individual adding
+       * @param userToDelete userid of user to delete
+       */
+      void deleteUser
+        (in string authorizingUser,
+         in string authorizingUserPassword,
+         in string userToDelete)
+          raises (ConfigAPIException, TaskKilledException);
+
+      /**
+       * Change the password of a user by authorized user.
+       * @param authorizingUser userid of individual wishing to do the add
+       * @param authorizingUserPassword encrypted password of individual adding
+       * @param userToModify userid of user to modify
+       * @param newUserPassword encrypted new password for user to modify
+       */
+      void modifyUserPasswordAuthorized
+        (in string authorizingUser,
+         in string authorizingUserPassword,
+         in string userToModify,
+         in string newUserPassword)
+          raises (ConfigAPIException, TaskKilledException);
+
+      /**
+       * Change the password of a user by that user.
+       * @param userToModify userid of individual wishing to do the add
+       * @param oldUserPassword encrypted current password
+       * @param newUserPassword encrypted new password
+       */
+      void modifyUserPassword
+        (in string userToModify,
+         in string oldUserPassword,
+         in string newUserPassword)
+          raises (ConfigAPIException, TaskKilledException);
+
+    };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+#endif //INC_CONFIGSERVER_API_USER_IDL
+
