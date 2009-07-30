@@ -1,0 +1,712 @@
+/*
+ * $RCSfile: ConfigAPIStructs.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:57 $
+ */
+
+/**
+ * @file
+ * The definitions of ConfigServer structs.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:57 $
+ */
+
+#ifndef INC_CONFIGSERVER_STRUCTS_IDL
+#define INC_CONFIGSERVER_STRUCTS_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "Range.idl"
+#include "Configuration.idl"
+#include "ConfigAPICommon.idl"
+#include "ConfigAPIEnums.idl"
+#include "ConfigAPIStructsBase.idl"
+
+#include <CosEventComm.idl>
+#include <CosEventChannelAdmin.idl>
+
+module RTC {
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+
+    /**
+     * Every important configurator structure has three views.
+     * <ol>
+     * <li> An "ID" view that is passed as an "in" argument to access
+     * methods along with the database reference and, usually, the workspace name.
+     * <li> In "Info" view that is returned or passed as an "out" argument
+     * containing information about the item that was not part of the ID,
+     * including the database refernce and, usually, the workpace name.
+     * <li> A combined view that includes both ID and Info.
+     * </ol>
+     */
+    struct ModuleInfoStruct
+    {
+      string databaseID;
+      ///< the database from which the module info was obtained
+      string workspaceName;
+      ///< the workspace containing the module
+      string dateModified;
+      ///< the date the module was last modified
+      OptionalVersionID branch;
+      ///< the branch this item is/should be on
+      OptionalVersionID stickyTag;
+      ///< optional sticky tag
+      OptionalStickyDateString stickyDate;
+      ///< optional sticky date
+      string comments;
+      ///< comments associated with this item
+      ItemRevisionStatus localStatus;
+      ///< the 'local' status of this item
+      ItemRevisionStatus extendedStatus;
+      ///< the 'extended' status of this item
+    };
+
+    struct ConfigModuleStruct
+    {
+      ModuleIDStruct id;
+      ModuleInfoStruct info;
+    };
+
+    /**
+     * The itemTypeID is a sequence interpreted as a optional
+     * item. If zero length, it is treated as a null; otherwise the
+     * first element is read as the item container and other elements
+     * are ignored.
+     */
+    struct ClassOrMemberInfoStruct
+    {
+      string databaseID;
+      ///< the database from which the item info was obtained
+      string workspaceName;
+      ///< the workspace containing the item
+      string dateModified;
+      ///< the date the item was last modified
+      OptionalVersionID branch;
+      ///< the branch this item is/should be on
+      OptionalVersionID stickyTag;
+      ///< optional sticky tag
+      OptionalStickyDateString stickyDate;
+      ///< optional sticky date
+      string comments;
+      ///< comments associated with this item
+      ItemRevisionStatus localStatus;
+      ///< the 'local' status of this item
+      ItemRevisionStatus extendedStatus;
+      ///< the 'extended' status of this item
+
+      sequence<ClassOrMemberIDStruct,1> itemTypeID;
+      ///< the type of this item
+      ObjectKind kind;
+      ///< the item kind, scalar or array
+      Range limits;
+      ///< contains the lowerLimit and upperLimit of the item
+      string units;
+      ///< the item units
+      any defaultValue;
+      ///< the item default value
+      long defaultSize;
+      ///< the item default size
+      boolean instantiable;
+      ///< the instantiability of the item
+      ConfigurabilitySelection configurability; ///< not yet supported
+      FormatSelection format;
+      ///< the presentation format of the item
+      string enumerationName;
+      ///< the name of the enumeration type
+      string enumerationHelper;
+      ///< the class name of the enumeration helper
+      string defaultValueAsString_Temp;
+      ///< the default value represented as a string
+      string lowerLimitAsString_Temp;
+      ///< the lower limit represented as a string
+      string upperLimitAsString_Temp;
+      ///< the upper limit represented as a string
+      sequence<ClassOrMemberIDStruct,1> baseType;
+      ///< the precomputed primitive base type
+      string baseEnumerationHelper;
+      ///< precomputed enumeration helper from base types
+    };
+
+    struct ConfigClassStruct
+    {
+      ClassOrMemberIDStruct id;
+      ClassOrMemberInfoStruct info;
+    };
+
+    /**
+     * The instanceTypeID and linkTargetID are sequences interpreted as a optional
+     * item. If zero length, it is treated as a null; otherwise the
+     * first element is read as the link target and other elements
+     * are ignored.
+     */
+    struct InstanceOrMemberInfoStruct
+    {
+      string databaseID;
+      ///< the database from which the item info was obtained
+      string workspaceName;
+      ///< the workspace containing the item
+      string dateModified;
+      ///< the date the item was last modified
+      OptionalVersionID branch;
+      ///< the branch this item is/should be on
+      OptionalVersionID stickyTag;
+      ///< optional stick tag
+      OptionalStickyDateString stickyDate;
+      ///< optional sticky date
+      string comments;
+      ///< comments associated with this item
+      ItemRevisionStatus localStatus;
+      ///< the 'local' status of this item
+      ItemRevisionStatus extendedStatus;
+      ///< the 'extended' status of this item
+
+      InstanceArrayHolderStatus arrayHolder;
+      ///< the array holder status, scalar or array
+      sequence<ClassOrMemberIDStruct,1> instanceTypeID;
+      ///< the instance type, may be null if instance is Lr
+      InstanceSelection selection;
+      ///< the selection, whether default, link, override
+      long overrideSize;
+      ///< the override size for arrays
+      sequence<InstanceOrMemberIDStruct,1> linkTargetID;
+      ///< optional link target
+      AnyOrNull overrideValue; ///< the override value
+      AnyOrNull effectiveValue;
+      ///< the effective value after links etc.
+      AnyOrNull effectiveValueAfterEnvironment;
+      ///< the effective value after application of env vars
+      long effectiveSize;
+      ///< the effective size after links etc.
+      string overrideValueAsString_Temp;
+      ///< the override value represented as a string
+      sequence<ClassOrMemberIDStruct,1> baseType;
+      ///< the precomputed primitive base type
+      string baseEnumerationHelper;
+      ///< precomputed enumeration helper from base types
+      FormatSelection effectiveFormat;
+      ///< the presentation format of the underlying type
+    };
+
+    struct ConfigInstanceStruct
+    {
+      InstanceOrMemberIDStruct id;
+      InstanceOrMemberInfoStruct info;
+    };
+
+    struct VersionInfoStruct
+    {
+      string databaseID;
+      ///< the database from which the version info was obtained
+      string comments;  ///< comments associated with the version
+      VersionKind kind; ///< the version kind e.g. tag or branch
+    };
+
+    struct VersionStruct
+    {
+      VersionIDStruct id;
+      VersionInfoStruct info;
+    };
+
+    struct QueryInfoStruct
+    {
+      string databaseID;
+      ///< the database from which the item info was obtained
+      string workspaceName;
+      ///< the workspace containing the item
+      string dateModified;
+      ///< the date the item was last modified
+      OptionalVersionID branch;
+      ///< the branch this item is/should be on
+      OptionalVersionID stickyTag;         ///< optional stick tag
+      OptionalStickyDateString stickyDate; ///< optional sticky date
+      string comments;
+      ///< comments associated with this item
+      ItemRevisionStatus localStatus;
+      ///< the 'local' status of this item
+      ItemRevisionStatus extendedStatus;
+      ///< the 'extended' status of this item
+      QueryKind kind;
+      ///< the query kind, used to interpret the definition
+      string definition;
+      ///< Definition of the query
+    };
+
+    struct ConfigQueryStruct
+    {
+      QueryIDStruct id;
+      QueryInfoStruct info;
+    };
+
+    /**
+     * When an item is checked in, a log record is created. This
+     * structure contains the information from that log record.
+     */
+    struct ItemLogInfoStruct
+    {
+      ItemRevisionStatus status;
+      ///< the item's status before it was checked in
+      string logText;
+      ///< some text entered by the user at checkin time
+      string userName;   ///< name of the user checking in the item
+      string dateLogged; ///< date checked in
+    };
+
+    /**
+     * RepositoryEvent sent on 'catastrophic' repository event
+     * e.g. reinitialized
+     */
+    struct RepositoryReplacedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+    };
+
+    /** RepositoryEvent sent if workspace is cleared before a checkout */
+    struct WorkspaceReplacedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;
+      ///< name of the workspace replaced
+    };
+
+    /**
+     * RepositoryEvent sent when workspace is created
+     */
+    struct WorkspaceAddedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;        ///< ID of the config server sending the event
+      string workspaceName; ///< name of workspace created
+    };
+
+    /**
+     * RepostitoryEvent reserved for future use when a 'global' workspace change
+     * occurs
+     */
+    struct WorkspaceChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;        ///< ID of the config server sending the event
+      string workspaceName; ///< name of workspace changed
+    };
+
+    /**
+     * RepositoryEvent sent when workspace is deleted
+     */
+    struct WorkspaceDeletedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;        ///< ID of the config server sending the event
+      string workspaceName; ///< name of workspace deleted
+    };
+
+    /** RepositoryEvent sent when a class or member is renamed */
+    struct ClassRenamedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;           ///< name of workspace containing the item
+      string oldName;                 ///< class or member info before renaming
+      ConfigClassStruct newClassInfo; ///< class or member info after renaming
+    };
+
+    /** RepositoryEvent sent when a class or member is added */
+    struct ClassAddedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;        ///< name of workspace containing the item
+      ConfigClassStruct classInfo; ///< class or member info after addition
+    };
+
+    /**
+     * RepositoryEvent sent to notify clients of a status or modified-date
+     * change
+     */
+    struct ClassStatusChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;
+      ///< name of workspace containing the item
+      ClassOrMemberIDStruct classID;
+      ///< id of class or member whose status was changed
+      ItemRevisionStatus newLocalStatus; ///< new status of this item
+      string newDateModified;
+      ///< new last-modified date for this item
+    };
+
+    /**
+     * RepositoryEvent sent when a class or member is changed (other than
+     * renaming)
+     */
+    struct ClassChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;        ///< name of workspace containing the item
+      ConfigClassStruct classInfo; ///< class or member info after change
+    };
+
+    /** RepositoryEvent sent when a class or member is deleted */
+    struct ClassDeletedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;          ///< name of workspace containing the item
+      ClassOrMemberIDStruct classID; ///< id of class or member that was deleted
+    };
+
+    /** RepositoryEvent sent when an instance or member is renamed */
+    struct InstanceRenamedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;        ///< ID of the config server sending the event
+      string workspaceName; ///< name of workspace containing the item
+      string oldName;       ///< instance or member info before change
+      ConfigInstanceStruct newInstanceInfo;
+      ///< instance or member info after change
+    };
+
+    /** RepositoryEvent sent when an instance or member is added */
+    struct InstanceAddedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;        ///< ID of the config server sending the event
+      string workspaceName; ///< name of workspace containing the item
+      ConfigInstanceStruct instanceInfo;
+      ///< instance or member info after addition
+    };
+
+    /**
+     * RepositoryEvent sent to notify clients to re-acquire instance or member
+     * info
+     */
+    struct InstanceStatusChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;
+      ///< name of workspace containing the item
+      InstanceOrMemberIDStruct instanceID;
+      ///< ID of instance or member whose status changed
+      ItemRevisionStatus newLocalStatus; ///< new status of this item
+      string newDateModified;
+      ///< new last-modified date for this item
+    };
+
+    /**
+     * RepositoryEvent sent when an instance or member is changed (other than
+     * renaming)
+     */
+    struct InstanceChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;        ///< ID of the config server sending the event
+      string workspaceName; ///< name of workspace containing the item
+      ConfigInstanceStruct instanceInfo;
+      ///< instance or member info after change
+    };
+
+    /** RepositoryEvent sent when an instance or member is deleted */
+    struct InstanceDeletedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;         ///< ID of the config server sending the event
+      string workspaceName;  ///< name of workspace containing the item
+      InstanceOrMemberIDStruct instanceID;
+      ///< ID of instance or member deleted
+    };
+
+    /** RepositoryEvent sent when a module is renamed */
+    struct ModuleRenamedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;
+      ///< name of workspace containing the item
+      string oldName;                   ///< module info before change
+      ConfigModuleStruct newModuleInfo; ///< module info after change
+    };
+
+    /** RepositoryEvent sent when a module is added */
+    struct ModuleAddedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;          ///< name of workspace containing the item
+      ConfigModuleStruct moduleInfo; ///< module info after addition
+    };
+
+    /** RepositoryEvent sent to notify clients to re-acquire module info */
+    struct ModuleStatusChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;
+      ///< name of workspace containing the item
+      ModuleIDStruct moduleID;           ///< id of module whose status changed
+      ItemRevisionStatus newLocalStatus; ///< new status of this item
+      string newDateModified;
+      ///< new last-modified date for this item
+    };
+
+    /** RepositoryEvent sent when a module is changed (other than renaming) */
+    struct ModuleChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;          ///< name of workspace containing the item
+      ConfigModuleStruct moduleInfo; ///< module info after change
+    };
+
+    /** RepositoryEvent sent when a module is deleted */
+    struct ModuleDeletedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;           ///< ID of the config server sending the event
+      string workspaceName;    ///< name of workspace containing the item
+      ModuleIDStruct moduleID; ///< ID of module deleted
+    };
+
+    /** RepositoryEvent sent when a query is renamed */
+    struct QueryRenamedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;           ///< name of workspace containing the item
+      string oldName;                 ///< query info before change
+      ConfigQueryStruct newQueryInfo; ///< query info after change
+    };
+
+    /** RepositoryEvent sent when a query is added */
+    struct QueryAddedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;        ///< name of workspace containing the item
+      ConfigQueryStruct queryInfo; ///< query info after addition
+    };
+
+    /** RepositoryEvent sent to notify clients to re-acquire query info */
+    struct QueryStatusChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;
+      ///< name of workspace containing the item
+      QueryIDStruct queryID;
+      ///< ID of the query whose status has changed
+      ItemRevisionStatus newLocalStatus; ///< new status of this item
+      string newDateModified;
+      ///< new last-modified date for this item
+    };
+
+    /** RepositoryEvent sent when a query is changed (except for renaming) */
+    struct QueryChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string workspaceName;        ///< name of workspace containing the item
+      ConfigQueryStruct queryInfo; ///< query info after change
+    };
+
+    /** RepositoryEvent sent when a query is deleted */
+    struct QueryDeletedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;         ///< ID of the config server sending the event
+      string workspaceName;  ///< name of workspace containing the item
+      QueryIDStruct queryID; ///< ID of query deleted
+    };
+
+    /** RepositoryEvent sent when a new version (tag or branch) is created */
+    struct VersionAddedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;             ///< ID of the config server sending the event
+      VersionStruct versionInfo; ///< version info after addition
+    };
+
+    /** RepositoryEvent sent when a version is deleted */
+    struct VersionDeletedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;             ///< ID of the config server sending the event
+      VersionIDStruct versionID; ///< ID of the version deleted
+    };
+
+    /** RepositoryEvent sent when a version is changed (except for renaming) */
+    struct VersionChangedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;             ///< ID of the config server sending the event
+      VersionStruct versionInfo; ///< version info after change
+    };
+
+    /**
+     * RepositoryEvent sent when a version is renamed. Currently we do not
+     * implement functions that rename versions.
+     */
+    struct VersionRenamedEvent
+    {
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string source;
+      ///< ID of the config server sending the event
+      string oldName;               ///< version info before change
+      VersionStruct newVersionInfo; ///< version info after change
+    };
+
+    /** TaskEvent sent when a task starts on the server */
+    struct TaskStartedEvent
+    {
+      string source;
+      ///< ID of the config server sending the event
+      ConfigTaskHandle taskHandle; ///< ID of the task that is starting
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      string taskName;             ///< name given to task by server
+      boolean isStoppable;
+      ///< true iff task could conceivably be stopped by user
+      boolean isPausable;
+      ///< true iff task could conceivably be paused by user
+    };
+
+    /** TaskEvent sent when a task is completed on the server */
+    struct TaskCompleteEvent
+    {
+      ConfigTaskHandle taskHandle; ///< ID of the task that is ending
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+    };
+
+    /** TaskEvent sent when a task makes progress on the server */
+    struct TaskProgressEvent
+    {
+      ConfigTaskHandle taskHandle; ///< ID of the task that is ending
+      ConfigAPIObjectHandle originatorID;
+      ///< ID of the API object reference sending the event
+      long value;
+      ///< numeric indicator of progress toward the max value
+      long maxValue;
+      ///< maximum value to be used for %complete displays
+      string description;
+      ///< description of the NEXT task phase or activity
+    };
+
+    /** TaskEvent sent when from a logger on the server */
+    struct LogEvent
+    {
+      string source;     ///< ID of the config server sending the event
+      string level;      ///< LogLevel set by server
+      string message;    ///< the text message being logged
+      string loggerName; ///< the server logger name used by the invoker
+    };
+
+    /**
+     * RepositoryEvent sent when server is shutting down.
+     * Currently sent from ConfigAPI, future will be sent from
+     * ConfigAPIFactory.
+     */
+    struct ServerShutdownEvent
+    {
+      string source;  ///< ID of the config server sending the event
+      string message; ///< message from the server
+    };
+
+    typedef sequence<ItemLogInfoStruct> ItemLogInfoList;
+    ///< list of ItemLogInfo
+    typedef sequence<VersionStruct> VersionList;     ///< list of versions
+    typedef sequence<ConfigModuleStruct> ModuleList; ///< list of modules
+    interface ModuleIterator {
+      boolean nextN(in long n, out ModuleList class_list);
+      oneway void destroy();
+    };
+
+    typedef sequence<ConfigClassStruct> ClassList; ///< list of classes
+    interface ClassIterator {
+      boolean nextN(in long n, out ClassList class_list);
+      oneway void destroy();
+    };
+
+    typedef sequence<ConfigInstanceStruct> InstanceList; ///< list of instances
+    interface InstanceIterator {
+      boolean nextN(in long n, out InstanceList class_list);
+      oneway void destroy();
+    };
+
+    typedef sequence<ConfigQueryStruct> QueryList; ///< list of queries
+    interface QueryIterator {
+      boolean nextN(in long n, out QueryList class_list);
+      oneway void destroy();
+    };
+
+    typedef sequence<InstanceOrMemberIDStruct> InstanceIDList;
+    ///< list of instance ID's
+
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+
+
+#endif //INC_CONFIGSERVER_STRUCTS_IDL
+

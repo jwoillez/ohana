@@ -1,0 +1,55 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/SequenceTypes.idl,v $
+ * $Id: SequenceTypes.idl,v 1.2 2007/09/27 23:26:03 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Type definitions for sequences of all basic IDL types.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:03 $
+ */
+
+#ifndef INC_SEQUENCE_TYPES_H
+#define INC_SEQUENCE_TYPES_H
+
+module RTC {
+
+  /*
+   * Common preferred types
+   */
+
+  typedef sequence<double> DoubleSequenceType;
+  typedef sequence<long> LongSequenceType;
+  typedef sequence<boolean> BooleanSequenceType;
+  typedef sequence<string> StringSequenceType;
+  typedef sequence<any> AnySequenceType;
+
+  /*
+   * Other available types
+   */
+
+  typedef sequence<short> ShortSequenceType;
+  typedef sequence<unsigned short> UShortSequenceType;
+  typedef sequence<unsigned long> ULongSequenceType;
+  typedef sequence<float> FloatSequenceType;
+  typedef sequence<char> CharSequenceType;
+  typedef sequence<octet> OctetSequenceType;
+
+  typedef sequence<wchar> WCharSequenceType;
+  typedef sequence<wstring> WStringSequenceType;
+  typedef sequence<long long> LongLongSequenceType;
+  typedef sequence<unsigned long long> ULongLongSequenceType;
+
+  // longdouble not supported by jacorb
+  // typedef sequence<long double> ULongDoubleSequenceType;
+
+};
+
+#endif

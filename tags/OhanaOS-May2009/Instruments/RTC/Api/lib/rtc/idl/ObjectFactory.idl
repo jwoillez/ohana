@@ -1,0 +1,64 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/ObjectFactory.idl,v $
+ * $Id: ObjectFactory.idl,v 1.2 2007/09/27 23:26:01 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * The interface definition for RTC::ObjectFactory.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:01 $
+ */
+
+#ifndef INC_RTC_OBJECT_FACTORY_IDL
+#define INC_RTC_OBJECT_FACTORY_IDL
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+
+#include "Loadable.idl"
+#include "Versionable.idl"
+#include "ManagedObject.idl"
+
+module RTC {
+
+  /**
+   * ObjectFactories are responsible for creating ManagedObjects.
+   * ObjectFactories are loadable which means that they can be dynamically
+   * loaded onto a CPU Manager using the DynamicLoader service
+   * (See Loadable.idl and DynamicLoader.idl).  Object factories are also
+   * versionalble (Versionable.idl).
+   *
+   * Previously loaded object factories can be located using the
+   * FactoryFinder service (See FactoryFinder.idl)
+   */
+  interface ObjectFactory : RTC::Loadable, RTC::Versionable {
+
+    /// Object was not created
+    exception NotCreated {};
+
+    /// Duplicate object already exists
+    exception Duplicate {};
+
+    /**
+     * Creates an ManagedObject with the specifie id.
+     * @param Id The object's id
+     * @return Object reference to created object
+     * @throw NotCreated ManagedObject cannot be created
+     * @throw Duplicate ManagedObject with same id exists already
+     */
+    RTC::ManagedObject Create(in RTC::ManagedObject::Id Id)
+      raises (NotCreated, Duplicate);
+  };
+
+  /// Sequence of object factory references
+  typedef sequence<ObjectFactory> ObjectFactorySequenceType;
+};
+
+#endif

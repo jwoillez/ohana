@@ -1,0 +1,188 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/Configuration.idl,v $
+ * $Id: Configuration.idl,v 1.2 2007/09/27 23:25:59 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Definitions for RTC Configuration data types.
+ * These form the basisi for the "V3" interface,
+ * but the actual interfaces are defined elsewhere.
+ * Refer to RTCConfiguration.idl for the previous "V2" definitions.
+ * @ingroup Configuration
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:59 $
+ */
+
+#ifndef INC_CONFIGURATION_IDL
+#define INC_CONFIGURATION_IDL
+
+
+#include "Ping.idl"
+#include "RTCCore.idl"
+// Need the native TAO ORB definitions to get access to CORBA::TypeCode.
+// @bug Other ORBs may not need this.
+#include <orb.idl>
+
+#ifndef VXWORKS
+
+#include "Range.idl"
+
+#endif
+
+// Prefix all IDL types
+#pragma prefix "rtc.jpl.nasa.gov"
+
+/**
+ *  @defgroup MetadataGroup  Node Metadata
+ *  The following structures are used to define metadata properties
+ *  for configurable object nodes. Configurable nodes are named objects
+ *  that can be manipulated (i.e. configured) by the
+ *   RTC::Configuration::Manager and its associated visitor objects.
+ *
+ *  RTC::Configuration identifies three basic types of configurable nodes
+ *  - Entries: leaf nodes that represent name-value pairs.
+ *  - Collections: nodes that contain child nodes.
+ *  - Arrays: specialized collection nodes for arrays of child nodes.
+ *  @ingroup Configuration
+ */
+
+module RTC {
+  /**
+   * @ingroup Configuration
+   */
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+
+    /**
+     * @exception BadType
+     * This exception is thrown if the entry does not support
+     * the type of data being applied.
+     * @ingroup MetadataGroup
+     */
+    exception BadType {
+      CORBA::TypeCode mTypeExpected;
+      CORBA::TypeCode mTypeReceived;
+    };
+
+    /**
+     * Basic configurable node types.
+     * @ingroup MetadataGroup
+     */
+    enum NodeKindType {
+      NK_COLLECTION, ///< Collection node.
+      NK_ARRAY,      ///< Array node.
+      NK_ENTRY       ///< Entry node.
+    };
+
+
+    /**
+     * Metadata associated with a configurable entry.
+     * Entries are name-value pairs and appear as leaf nodes in the
+     * configuration hierarchy.
+     * @ingroup MetadataGroup
+     */
+    struct EntryMetaData {
+        string Name;      ///< Entry name
+        string Comment;   ///< Entry description
+        string Units;     ///< Unit of measurement for the entry
+        RTC::Range Range; ///< Valid value range for the entry
+        any DefaultValue; ///< Default value for the entry
+    };
+
+
+    /**
+     * Metadata associated with a configurable collection. Collections are named
+     * objects that can contain other configurable objects (e.g. entries,
+     * collections, and arrays).
+     * @ingroup MetadataGroup
+     */
+    struct CollectionMetaData {
+        string Name;    ///< Collection name
+        string Comment; ///< Collection description
+    };
+
+
+    /**
+     * Metadata associated with a configurable array.
+     * Arrays are named objects that can contain other configurable objects
+     * (e.g. entries, collections, and arrays) of the same type.  The names of
+     * child objects array indexes ranging from 0 to N-1 where N is the number
+     * of array elements.
+     *
+     * Arrays can be statically or dynamically sized.  A static array derives
+     * its length from the code - whereas a dynamically sized array can change
+     * length in response to reconfiguration operations.
+     *
+     * Arrays also contain metadata associated with each element of the array.
+     * Since all elements of an array are the same type, only one metadata
+     * structure is needed to describe all elements (Except the name of each
+     * element).
+     * This metadata could be metadata for entries, collections, or nested
+     * arrays, therefore it is represented as a union of these possibilities.
+     * @ingroup MetadataGroup
+     */
+    struct ArrayMetaData {
+      string Name;     ///< Array name
+      string Comment;  ///< Array description
+      long lLength;    ///< Array length
+      boolean Dynamic; ///< Array is dynamically sized if true
+
+      /**
+       * Union of possible array element metadata types
+       * @ingroup MetadataGroup
+       */
+      union ElementMetaData switch (NodeKindType) {
+        case NK_ENTRY :
+          EntryMetaData Entry;  /// < Array elements are entries
+        case NK_COLLECTION :
+          CollectionMetaData Collection; ///< Array elements are collections
+        case NK_ARRAY :
+          sequence<ArrayMetaData,1> Array; ///< Array elements are arrays
+      } Element; ///< Metadata for all array elements
+    };
+
+
+    /**
+     * Union of all metadata types.
+     * NodeMetaData provides a generic way to represent metadata for any
+     * configurable node type.  This is used to create a tree graph of
+     * metadata for a hierarchy of configurable objects.
+     */
+    union NodeMetaData switch (NodeKindType) {
+      case NK_COLLECTION :
+        CollectionMetaData Collection; ///< Metadata for collection nodes
+      case NK_ARRAY :
+        ArrayMetaData Array;           ///< Metadata for array nodes
+      case NK_ENTRY :
+        EntryMetaData Entry;           ///< Metadata for entry nodes
+    };
+
+
+    /**
+     * Recursive structure to represent metadata for a configurable object
+     * hierarchy.
+     */
+    struct Hierarchy {
+        string Type;                  ///< Class type of the node.
+        NodeMetaData MetaData;        ///< Metadata associated with node.
+        sequence<Hierarchy> Children; ///< Child hierarchies if any.
+    };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+
+#endif
+

@@ -1,0 +1,199 @@
+/*
+ * $RCSfile: ConfigAPIBase.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:55 $
+ */
+
+/**
+ * @file
+ * The interface definition for the ConfigAPIBase server.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:55 $
+ */
+
+#ifndef INC_CONFIGSERVER_BASE_IDL
+#define INC_CONFIGSERVER_BASE_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "Name.idl"
+#include "Configuration.idl"
+#include "ConfigAPICommon.idl"
+#include "ConfigAPIEnums.idl"
+#include "ConfigAPIStructsBase.idl"
+#include "ConfigAPIExceptions.idl"
+#include <CosEventComm.idl>
+#include <CosEventChannelAdmin.idl>
+
+module RTC {
+
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+    /**
+     * The ConfigAPIBase interface is provided for those
+     * clients wanting to access the configuration server
+     * through a limited number of methods and a
+     * smaller footprint especially on the C++ side.
+     * It also acts as a base class for the full ConfigAPI interface.
+     */
+    interface ConfigAPIBase
+    {
+      /**
+       * Request the server to cache all items in the database.
+       * Required for V2 database served as V3.
+       *
+       * @throws ConfigAPIException on errors
+       * @throws TaskKilledException if task stopped by user
+       */
+      void cacheAll
+        ()
+        raises (ConfigAPIException, TaskKilledException);
+
+      /**
+       * Connect a consumer to the ConfigAPI object for repository
+       * event notifications. These are the notifications of changes
+       * made to the database and are broadcast to every connected consumer.
+       *
+       * @param consumer a PushConsumer that will receive the notifications
+       * @throws CannotConnect if can't connect for some reason
+       */
+      void connect_for_repository_events
+        (in CosEventComm::PushConsumer consumer)
+        raises (CannotConnect);
+
+      /**
+       * Connect a consumer to the ConfigAPI object for task event
+       * notifications. These are the
+       * notifications of task status are are sent only to the consumer
+       * who initiated the task.
+       *
+       * @param consumer a PushConsumer that will receive the notifications
+       * @throws CannotConnect if can't connect for some reason
+       */
+      void connect_for_task_events
+        (in CosEventComm::PushConsumer consumer)
+        raises (CannotConnect);
+
+      /**
+       * Disconnect repository and task event consumers and
+       * release resources associated with this API object
+       */
+      oneway void destroy
+        ();
+
+      /** Disconnect the consumer from  the ConfigAPI object
+       * for repository event notifications.
+       */
+      void disconnect_for_repository_events
+        ();
+
+      /** Disconnect the consumer from  the ConfigAPI object
+       * for task event notifications.
+       */
+      void disconnect_for_task_events
+        ();
+
+      /** Version-2-like method for getting an array-instance size
+       * given an instance name.
+       *
+       * @param workspaceName name of the workspace to lookup item in
+       * @param instanceID instance to get size of
+       * @return effective size of array
+       * @throws ConfigAPIException on errors
+       * @throws TaskKilledException if task stopped by user
+       */
+      long getCurrentSize
+        (in string workspaceName,  in InstanceOrMemberIDStruct instanceID)
+        raises (ConfigAPIException, TaskKilledException);
+
+      /** Version-2-like method for getting an instance value
+       * given an instance name.
+       *
+       * @param workspaceName name of the workspace to lookup item in
+       * @param instanceID instance to get value of
+       * @return effective value of array as an any
+       * @throws ConfigAPIException on errors
+       * @throws TaskKilledException if task stopped by user
+       */
+      any getCurrentValue
+        (in string workspaceName, in InstanceOrMemberIDStruct instanceID)
+        raises (ConfigAPIException, TaskKilledException);
+
+      /**
+       * Return a structure that contains all the parameters of the servant.
+       * Password field is masked.
+       *
+       * @return servant parameter structure with masked password
+       */
+      ConfigServerIDStruct getDatabaseInfo();
+
+      /**
+       * Return the ID of the database
+       *
+       * @return string
+       */
+      string getDatabaseID();
+
+      /**
+       * Return an indicator of the database version
+       * @return version indicator
+       */
+      DatabaseVersion getDatabaseVersion();
+
+      /**
+       * Return the unique handle of this object reference.
+       * The client uses this to discover whether a repository
+       * event was initiated by itself or by another client.
+       *
+       * @return stringified numeric handle to object
+       */
+      ConfigAPIObjectHandle getHandle();
+
+      /**
+       * Version-2-like method for getting all the instance members
+       * of a given type, using iterators.
+       *
+       * @param  uiHowMany maximum size of the iterator
+       * @param  workspaceName the workspace in which to look for the instance
+       * @param  classID class ID of the type
+       * @param  ConfigurationNameList place to receive up to
+       * InstanceOrMemberIDs
+       * @param  Iterator iterator to return if there are more than uiHowMany
+       * items, else null
+       * @throws ConfigAPIException on errors
+       * @throws TaskKilledException if task stopped by user
+       */
+      void getInstanceMembersOfType
+        (in unsigned long uiHowMany, in string workspaceName,
+         in ClassOrMemberIDStruct classID,
+         out ItemList ConfigurationNameList, out ItemIterator Iterator)
+        raises (ConfigAPIException, TaskKilledException);
+
+      /**
+       * @param userName username requesting authorization
+       * @param userPassword encrypted password of user requesting authorization
+       * @return UserCategory for user
+       */
+      UserCategory getUserCategory
+        (in string userName,
+         in string userPassword)
+          raises (ConfigAPIException, TaskKilledException);
+    };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+
+#endif // INC_CONFIGSERVER_BASE_IDL
+
