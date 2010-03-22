@@ -1,0 +1,97 @@
+/**
+ * $RCSfile: ConfigAPIFactory.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:56 $
+ */
+
+
+/**
+ * @file
+ * The interface definition for the ConfigAPIFactory server.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:56 $
+ */
+
+#ifndef INC_CONFIGSERVER_IDL
+#define INC_CONFIGSERVER_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "ConfigAPIExceptions.idl"
+#include "ConfigAPIStructsBase.idl"
+#include "ConfigAPIBase.idl"
+#include <CosEventComm.idl>
+
+module RTC {
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+    /**
+     * The ConfigAPIFactory interface is used by any client wishing to
+     * access a configuration server. The intent of this factory
+     * interface is to provide users with references to an actual API
+     * that can then be used to manipulate the objects managed by that
+     * server. There will be at most one ConfigAPIFactory instance
+     * associated with any database, corresponding to the server that
+     * presents that database.
+     */
+    interface ConfigAPIFactory
+    {
+       /**
+        * Return a structure that contains all the parameters of this servant
+        */
+      ConfigServerIDStruct getDatabaseInfo();
+
+       /**
+        * Return the object reference of a ConfigAPI to use by clients.
+        * The client can be assured that no
+        * other client is addressing that reference.
+        * @todo migrate embedded interface to create_as_user
+        */
+      ConfigAPIBase create () raises(CannotConnect);
+
+       /**
+        * Return the object reference of a ConfigAPI to use by clients.
+        * The client can be assured that no
+        * other client is addressing that reference.
+        * @param username name of the user to connect
+        * @param password encrypted password
+        */
+      ConfigAPIBase create_as_user (in string username, in string password) raises(CannotConnect);
+
+       /**
+        * Destroy all ConfigAPI references held by this servant, inform
+        * all clients of imminent shutdown, and shutdown the servant.
+        */
+      oneway void shutdown(in boolean killVM);
+
+
+       /**
+        * Destroy all ConfigAPI references held by this servant, inform
+        * all clients of imminent shutdown, and shutdown the servant.
+        * This variant is synchronous so that you can be assured the target
+        * is shutdown before proceeding e.g. to start a new server on the
+        * same name. There is one problem with this: after the target dies,
+        * it doesn't reliably return to the caller, the caller will see a
+        * org.omg.CORBA.COMM_FAILURE exception every time, and should
+        * ignore it. That exception could also arise from the target being
+        * already dead.
+        */
+      void syncShutdown(in boolean killVM);
+    };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+#endif //INC_CONFIGSERVER_IDL
+

@@ -1,0 +1,419 @@
+/*
+ * $RCSfile: Kat.idl,v $
+ * $Revision: 1.25.2.17 $
+ * $Date: 2007/10/15 23:18:37 $
+ */
+
+/**
+ * @file:
+ * Interface definition for the KRTC Star Tracker.
+ *
+ * @author Erik Hovland
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002-2006, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.25.2.17 $
+ * @date $Date: 2007/10/15 23:18:37 $
+ */
+
+
+
+#ifndef INC_KAT_IDL
+#define INC_KAT_IDL
+
+
+#include <RTCCore.idl>
+#include <Camera.idl>
+
+/* pragma always comes after the RTC idl or it will break some things */
+#pragma prefix "keck.jpl.nasa.gov"
+
+module KatModule {
+
+  /**
+   * @enum SERVO_MODE
+   *
+   * An enumerated type which describes the different servo modes of the
+   * star tracker.
+   */
+  enum SERVO_MODE { SM_IDLE,            ///< The star tracker is in idle mode (not really doing anything)
+                    SM_CALIBRATE_IMAGE, ///< The star tracker is taking a dark calibration of the field
+                    SM_ALIGN,           ///< The star tracker is in wide field alignment mode
+                    SM_TRACK,           ///< The star tracker is in tracking mode
+                    SM_OFF              ///< The star tracker is in off mode; the servo task is off as well
+                  };
+  typedef sequence<SERVO_MODE> SERVO_MODE_LIST;
+
+  /**
+   * @enum TRACK_CONTROLLER_MODE
+   *
+   * An enumerated type which describes the different tracking modes of
+   * the star tracker.
+   */
+  enum TRACK_CONTROLLER_MODE { TCM_SEARCH,           ///< The star tracker is in track mode and is searching for the star
+                               TCM_SEMI_LOCK,        ///< The star tracker is in track mode and has found the star and is attempting to center the star in it's field
+                               TCM_LOCK,             ///< The star tracker is in track mode and has found and locked in on the star
+			       TCM_SEARCH_TIMEOUT,   ///< The star tracker is in track mode and is searching but has timed out without finding the star
+                               TCM_SEMI_LOCK_TIMEOUT,///< The star tracker is in track mode and has found the star but has timed out without locking the star into the center of it's field
+                               TCM_IDLE              ///< The star tracker is not in track mode
+                             };
+  typedef sequence<TRACK_CONTROLLER_MODE> TRACK_CONTROLLER_MODE_LIST;
+
+  /**
+   * @enum CONTROL_MODE
+   *
+   * An enumerated type which describes the different modes the star
+   * tracker can be in with respect to AO chopping or nodding
+   */
+  enum CONTROL_MODE { CM_HOLD,     ///< AO is chopping and the star is out of the field
+                      CM_TRACK,    ///< AO is chopping and the star is in the field
+                      CM_CHOP_OUT  ///< AO is not chopping
+                    };
+  typedef sequence<CONTROL_MODE> CONTROL_MODE_LIST;
+
+  /**
+   * @struct Target Kat.idl KatC.h
+   *
+   * Helper struct to give offset targets to the star tracker. The target is a
+   * two axis vector that can be used over the wire to simplify the passing
+   * of targeting information to the star tracker.
+   * @see KatModule::Kat::SetLockTarget
+   * @see KatModule::Kat::SetIncrLockTarget
+   */
+  struct Target {
+    double x;
+    double y;
+  };
+
+  /**
+   * @interface Kat Kat.idl KatC.h
+   *
+   * The CORBA interface to the Keck star tracker (Keck Angle Tracker, or KAT).
+   * This interface provides all of the necessary access for users to command
+   * the star tracker to perform it's functions. It also provides access to
+   * camera gizmos so that the camera can inform the star tracker about changes
+   * in the camera. This is done through inheritance from the
+   * CameraModule::CameraUser interface.
+   *
+   * @exception Aborted The star tracker has aborted the command
+   * @exception InternalError The star tracker has committed a serious error
+   * while trying to process the interface function
+   */
+  interface Kat : CameraModule::CameraUser {
+   
+    exception InternalError {};
+    exception Aborted {};
+
+    /**
+     * Turn the star tracker servo on (only necessary if you turned the star
+     * tracker servo off). This will put the servo task back on the list
+     * of scheduled tasks.
+     */
+    void On();
+
+    /**
+     * Turn the star tracker servo off. This will also remove the servo task
+     * from the list of scheduled tasks.
+     */
+    void Off();
+
+    /**
+     * Idles the star tracker. The star tracker will capture images and put them
+     * out onto telemetry, but does not do any control.
+     */
+    void Idle();
+
+    /**
+     * Commands the star tracker to do a dark calibration of it's field. Can
+     * throw a KatModule::Kat::Aborted exception if commanded while it is
+     * calibrating.
+     * @throw Aborted Something has requested the star tracker to do
+     * something else so it has aborted the calibration.
+     */
+    void CalibrateImage() raises (Aborted);
+
+    /**
+     * Commands the star tracker to assume the camera has been put into wide
+     * field acquisition. Produces a wide field image on telemetry. Does not
+     * perform any control.
+     */
+    void Align();
+
+    /**
+     * Commands the star tracker to begin tracking a star. The star tracker
+     * will transition to closed loop control of the system.
+     */
+    void Track();
+
+    /**
+     * Change the star tracker's low light level threshold. Used to determine
+     * when the star is found while in search mode.
+     * @param NewLowLightLevel The new value for the star tracker's low light
+     * level threshold
+     * @throw InternalError The proposed NewLowLightLevel is invalid
+     */
+    void UpdateLowLightLevel(in long NewLowLightLevel) raises (InternalError);
+
+    /**
+     * Change the star tracker's locked low light level threshold. Used to
+     * determine when the star has been lost while in KatModule::TCM_LOCK mode.
+     * @param NewLockedLowLtLvl The new value for the star tracker's locked
+     * low light level threshold
+     * @throw InternalError The proposed NewLockedLowLtLvl is invalid
+     */
+    void UpdateLockedLowLightLevel(in long NewLockedLowLtLvl) raises (InternalError);
+
+    /**
+     * Command the Tip Tilt Mirrors to an absolute position.
+     * @param NewXCoord X position in image space
+     * @param NewYCoord Y position in image space
+     */
+    void SetActuators(in double NewXCoord, in double NewYCoord);
+
+    /**
+     * Change the star tracker's pixel level threshold. This threshold will be
+     * subtracted from every pixel in the frame.
+     * @param Threshold The threshold value to be used for the pixels in each
+     * image
+     */
+    void SetPixelThreshold(in double Threshold);
+
+    /**
+     * Commands the star tracker to track on a different point then the center
+     * of the field. Allows users to use the star tracker to target a different
+     * position in case the center is not the best position for the system.
+     * @param LockTarget Absolute target offset for the star tracker
+     * @see KatModule::Target
+     */
+    void SetLockTarget(in Target LockTarget);
+
+    /**
+     * Commands the star tracker to track on a different point than the center
+     * of the field in a incremental fashion.
+     * @param IncrTarget An Incremental target offset for the star tracker
+     * @see KatModule::Target
+     */
+    void SetIncrLockTarget(in Target IncrTarget);
+
+    /**
+     * Commands the star tracker to use the target provided by
+     * KatModule::Kat::SetIncrLockTarget for tracking.
+     */
+    void UpdateLockTarget();
+
+    /**
+     * Commands the star tracker to reset the offset target to zero. This will
+     * cause the star tracker to track at the center of the field again.
+     */
+    void ResetLockTarget();
+
+    /**
+     * Commands the star tracker to enable the use of the AO chop algorithm.
+     * This will cause the star tracker to take momentary pauses when it thinks
+     * the AO system has moved the star off its field of view.
+     */
+    void EnableAoChop();
+
+    /**
+     * Commands the star tracker to disable the use of the AO chop algorithm.
+     */
+    void DisableAoChop();
+
+    /**
+     * Modify the averaged image size for telemetry and the calibrated
+     * image count; this is useful when loading slower clocks like 
+     * alignment clocks.  The argument represents the number of images in the
+     * averaged image telemetry and is multiplied by 10 to be the number of
+     * images to collect during calibration (~10sec of data.)
+     */
+    void UpdateImageSampleSize(in long newSampleSize);
+
+    /**
+     * Modify the PID gains of the LockController.  The arguments represent
+     * scaling factors applied to the configured gain.
+     */ 
+    void SetGains(in double newGainX, in double newGainY);
+
+    /**
+     * Commands the angle tracker to enable reading of the detector.
+     */
+    void EnableImageRead();
+
+    /**
+     * Commands the angle tracker to disable reading of the detector.
+     * Used when initializing/setting up a new waveform.
+     */
+    void DisableImageRead();
+
+
+  };
+};
+
+module KAT {
+  /**
+   * @enum SERVO_MODE
+   *
+   * An enumerated type which describes the different servo modes of the
+   * star tracker.
+   */
+  enum SERVO_MODE {
+    IDLE,      ///< The star tracker is in idle mode (not really doing anything)
+    CALIBRATE, ///< The star tracker is taking a dark calibration of the field
+    ALIGN,     ///< The star tracker is in wide field alignment mode
+    TRACK,     ///< The star tracker is in tracking mode
+    OFF        ///< The star tracker is in off mode; the servo task is off as well
+  };
+  typedef sequence<SERVO_MODE> SERVO_MODE_LIST;
+
+  /**
+   * @enum TRACKING_MODE
+   *
+   * An enumerated type which describes the different tracking modes of the
+   * star tracker.
+   */
+  enum TRACKING_MODE {
+    SEARCH,           ///< The star tracker is in track mode and is searching for the star
+    SEMI_LOCK,        ///< The star tracker is in track mode and has found the star and is attempting to center the star in it's field
+    LOCK,             ///< The star tracker is in track mode and has found and locked in on the star
+    SEARCH_TIMEOUT,   ///< The star tracker is in track mode and is searching but has timed out without finding the star
+    SEMI_LOCK_TIMEOUT ///< The star tracker is in track mode and has found the star but has timed out without locking the star into the center of it's field
+  };
+  typedef sequence<TRACKING_MODE> TRACKING_MODE_LIST;
+
+  enum LOCKTARGET_TYPE {
+    ABSOLUTE,   ///< The supplied lock target type is an absolute position
+    INCREMENTAL ///< The supplied lock target type is an incremental position
+  };
+
+  /**
+   * @struct Point Kat.idl KatC.h
+   *
+   * Helper struct to give targets to the star tracker. The point is a
+   * two axis vector that can be used over the wire to simplify the passing
+   * of targeting information to the star tracker.
+   * @see KAT::StarTracker::ManualTarget
+   */
+  struct Point {
+    double x;
+    double y;
+  };
+  /**
+   * @enum CONTROL_MODE
+   *
+   * An enumerated type which describes the different modes the star
+   * tracker can be in with respect to AO chopping or nodding. Specifically
+   * there are conditions where the star tracker will be in a tracking mode
+   * but will not be calculating track targets or actuating them because a
+   * system that the star tracker requires is not available. Currently the only
+   * condition that applies is that the AO is chopping the star out of field
+   * for the nuller instrument in an attempt to determine the location of the
+   * null. So the star tracker has to pause.
+   */
+  enum CONTROL_MODE { CM_HOLD,     ///< AO is chopping and the star is out of the field
+                      CM_TRACK,    ///< AO is chopping and the star is in the field
+                      CM_CHOP_OUT  ///< AO is not chopping
+                    };
+  typedef sequence<CONTROL_MODE> CONTROL_MODE_LIST;
+
+  interface StarTracker : CameraModule::CameraUser {
+    /**
+     * Provides the user with the ability to remove or add the star tracker
+     * servo to the list of scheduled tasks in the RTC scheduler list of
+     * tasks.
+     * @param Command Use false to unschedule the star trackers servo task. Use
+     * true to schedule the star tracker servo task. Does nothing if the
+     * requested state is the same as the current star tracker state.
+     * @return 0 if the command was successful. A negative value will be
+     * returned if the command failed for whatever reason. Note that any CORBA
+     * object will throw a system exception if there is a problem with the
+     * underlying CORBA middleware.
+     */
+    long ScheduleServo(in boolean Command);
+    /**
+     * Takes a servo mode and commands the star tracker to enter that mode. It
+     * uses the KAT::SERVO_MODE enum to describe the modes that it can achieve.
+     * @param Mode Used to place the star tracker servo into one of its
+     * enumerated servo modes.
+     * @param SubMode Not currently used. But placed to anticipate the
+     * possibility of submodes that may be desired. The most likely use is the
+     * Calibrate servo mode which may have a mode for producing a dark frame,
+     * a mode for producing another type of calibration.
+     * @return 0 if the command was successful. A negative value will
+     * be returned if the command failed for whatever reason. Note that any
+     * CORBA object will throw a system exception if there is a problem with
+     * the underlying CORBA middleware.
+     */
+    long ServoCommand(in KatModule::SERVO_MODE Mode, in unsigned long SubMode);
+
+    /**
+     * Takes a string which corresponds to an available value that can
+     * be changed. The value name will be attempt to correspond to
+     * the config name that corresponds to this. So you may have to know
+     * that name. It assumes that you have the right project and
+     * gizmo/object so you can leave off the "project name"."gizmo name".
+     * It can only update numbers. No sophisticated types are allowed.
+     * @param ValueName The config name of the value you wish to change
+     * @param NewValue the stringified version of the value you wish to
+     * change.
+     * @return 0 if the command was successful. A negative value will
+     * be returned if the command failed for whatever reason. Note that any
+     * CORBA object will throw a system exception if there is a problem with
+     * the underlying CORBA middleware.
+     */
+    long UpdateValue(in string ValueName, in string NewValue);
+
+    /**
+     * Takes a KAT::Point target of an absolute mirror position. This will
+     * command the star tracker's main mirror actuators to this absolute
+     * position as long as the position is sane.
+     * @param Target An absolute mirror position target. The target should
+     * be considered to be in pixel units and camera frame rotation.
+     * @return 0 if the command was successful. A negative value will
+     * be returned if the command failed for whatever reason. Note that any
+     * CORBA object will throw a system exception if there is a problem with
+     * the underlying CORBA middleware.
+     */
+    long ManualPosition(in KAT::Point Target);
+
+    /**
+     * Commands the star tracker to track on the point provided as its
+     * center of field. The default center of field is the center of the
+     * camera image (typically 7.5, 7.5 of a 16,16 frame).
+     * @param TargetType tells the star tracker whether the supplied target
+     * is either an absolute target or an incremental target.
+     * @param Position Absolute or incremental target of the center of
+     * field for the star tracker.
+     * @return 0 if the command was successful. A negative value will
+     * be returned if the command failed for whatever reason. Note that any
+     * CORBA object will throw a system exception if there is a problem with
+     * the underlying CORBA middleware.
+     */
+    long LockTarget(in KAT::LOCKTARGET_TYPE TargetType,
+                    in KAT::Point Position);
+
+    /**
+     * If an incremental target was set using KAT::StarTracker::LockTarget
+     * then this call will erase that incremental target and just use the
+     * absolute target position that is currently loaded.
+     * @return 0 if the command was successful. A negative value will
+     * be returned if the command failed for whatever reason. Note that any
+     * CORBA object will throw a system exception if there is a problem with
+     * the underlying CORBA middleware.
+     */
+    long ResetLockTarget();
+
+    /**
+     * Commands the star tracker to enable or disable the chop algorithm usage
+     * for the AO chop system.
+     * @param Enable if true, watch the AO chop, if false do not watch the chop.
+     * @return 0 if the command was successful. A negative value will
+     * be returned if the command failed for whatever reason. Note that any
+     * CORBA object will throw a system exception if there is a problem with
+     * the underlying CORBA middleware.
+     *
+     */
+    long WatchChop(in boolean Enable);
+  };
+};
+#endif // INC_KAT_IDL

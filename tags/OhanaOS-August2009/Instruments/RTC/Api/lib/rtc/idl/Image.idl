@@ -1,0 +1,200 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/Image.idl,v $
+ * $Id: Image.idl,v 1.2 2007/09/27 23:26:00 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Interface definitions for various image representations.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:00 $
+ */
+
+
+#ifndef INC_RTC_IMAGE_IDL
+#define INC_RTC_IMAGE_IDL
+
+#include "SequenceTypes.idl"
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module RTC {
+
+  /**
+   *  Common header information for all image types
+   */
+  struct ImageHeader {
+    boolean bValid; // True if image data is consistent false otherwise
+    double dIntegrationTime; // Integration time in seconds
+    long lCoadds; // Images co-added
+    long lH; // Horizontal dimension in pixels
+    long lV; // Vertical dimension in pixels
+  };
+
+  // Image data: By convention a 2D image is stored
+  // such that the (x,y) coordinate corresponds to
+  // the [y * iH + x] element of the sequence.
+
+  // 8 bit pixel image
+  struct Image8 {
+    ImageHeader Header;
+    RTC::OctetSequenceType Pixels;
+  };
+
+
+  // 16 bit pixel image
+  struct Image16 {
+    ImageHeader Header;
+    RTC::UShortSequenceType Pixels;
+  };
+
+  // 32 bit pixel image
+  struct Image32 {
+    ImageHeader Header;
+    RTC::ULongSequenceType Pixels;
+  };
+
+  // Single precision image
+  struct ImageFloat {
+    ImageHeader Header;
+    RTC::FloatSequenceType Pixels;
+  };
+
+  // Double precision image
+  struct ImageDouble {
+    ImageHeader Header;
+    RTC::DoubleSequenceType Pixels;
+  };
+
+  /// Sequence of 8-bit images
+  typedef sequence<Image8> Image8SequenceType;
+  /// Sequence of 16-bit images
+  typedef sequence<Image16> Image16SequenceType;
+  /// Sequence of 32-bit images
+  typedef sequence<Image32> Image32SequenceType;
+  /// Sequence of floating point images
+  typedef sequence<ImageFloat> ImageFloatSequenceType;
+  /// Sequence of double precision floating point images
+  typedef sequence<ImageDouble> ImageDoubleSequenceType;
+
+  /**
+   * Sequence of offsets that map physical pixels into a linear buffer
+   * There are two basic strategies for defining a pixel map
+   * In the case where it is known that all pixels in the same
+   * row are adjacent in the buffer (i.e. pixels with the same y coordinate)
+   * pixel map can specify a single offset for each row of the image.
+   * In the case where there is no such guarantee, pixel mapcan contain
+   * a separate offset for every pixel, such that Pixel (x,y) has offset
+   * Map [y*H + x] where H is the number of colums the image has.
+   */
+  typedef sequence<unsigned long> PixelMapType;
+
+  /// Sequence of timing waveform words that are used to clock out
+  /// images.  The semantics of each word is implementation dependent.
+  typedef sequence<unsigned long> TimingWaveformDataType;
+
+  /**
+   *  Meta-data for a single sub-image
+   *  This meta data is associated with a particular timing pattern
+   *  and used to rectify raw image data into a Image structure using the
+   *  pixel map
+   */
+  struct SubImageMap {
+
+    /// Sub-image name
+    string Name; 
+
+    /// X-coord of the left hand side of the sub-image relative to the 
+    /// whole frame
+    long lX;
+ 
+    //// Y-coord of the top of the sub-image relative to the whole frame
+    long lY;
+
+ 
+    /// Horizontal dimension of the sub-image in pixels
+    long lH; 
+
+    /// Vertical dimension of the sub-image in pixels
+    long lV; 
+
+    /// Pixel map for the sub image.
+    PixelMapType PixelMap; 
+
+  };
+  /// Sequence of sub-image meta-data
+  typedef sequence<SubImageMap> SubImageMapSequenceType;
+};
+
+
+/**
+ * Specifies types related to image telemetry.
+ */
+module RTCImage {
+
+  /// Pixel data type
+  typedef double PIXEL;
+
+  /// Array of pixels
+  typedef sequence<PIXEL> PIXEL_LIST;
+
+  /// Image structure
+  struct Image {
+    double dIntegrationTime;  ///< Integration time in seconds
+    long iCoadds; ///< Number of images co-added
+    long iH; ///< Horizontal dimension in pixels
+    long iV; ///< Vertical dimension in pixels
+
+    /// Image data: By convention a 2D image is stored
+    /// such that the x and y coordinates corresponds to
+    /// the y * the horizontal size plus x element of the sequence.
+    PIXEL_LIST Pixels;
+  };
+
+  /// Sequence of images
+  typedef sequence<Image> IMAGE_LIST;
+
+
+  /**
+   * Sequence of offsets that map physical pixels into a linear buffer
+   * There are two basic strategies for defining a PIXEL_MAP
+   * In the case where it is known that all pixels in the same
+   * row are adjacent in the buffer (i.e. pixels with the same y coordinate)
+   * PIXEL_MAP can specify a single offset for each row of the image.
+   * In the case where there is no such guarantee, PIXEL_MAP can contain
+   * a separate offset for every pixel, such that Pixel (x,y) has offset
+   * Map [y*H + x] where H is the number of colums the image has.
+   */
+  typedef sequence<unsigned long> PIXEL_MAP;
+
+
+  /// Sequence of timing waveform words that are used to clock out
+  /// images.  The semantics of each word is implementation dependent.
+  typedef sequence<unsigned long> TIMING_WAVEFORM_DATA;
+
+  /**
+   * Meta-data for a single sub-image
+   * This meta data is associated with a particular timing pattern
+   * and used to rectify raw image data into a Image structure using the
+   * pixel map
+   */
+  struct SubImageMap {
+    string sName; ///< Sub-image name
+    long iX; ///< X-coord of the left hand side of the sub-image relative to the whole frame
+    long iY; ///< Y-coord of the top of the sub-image relative to the whole frame
+    long iH; ///< Horizontal dimension of the sub-image in pixels
+    long iV; ///< Vertical dimension of the sub-image in pixels
+    PIXEL_MAP PixelMap; ///< Pixel map for the sub image.
+  };
+
+  /// Sequence of sub-image meta-data
+  typedef sequence<SubImageMap> SUB_IMAGE_MAP_LIST;
+};
+
+#endif
