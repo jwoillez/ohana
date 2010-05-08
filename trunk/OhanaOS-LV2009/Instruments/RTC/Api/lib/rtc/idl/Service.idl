@@ -1,0 +1,43 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/Service.idl,v $
+ * $Id: Service.idl,v 1.2 2007/09/27 23:26:03 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Interface definitions for RTC::Service.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002-2004, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:03 $
+ */
+
+#ifndef INC_RTC_SERVICE_IDL
+#define INC_RTC_SERVICE_IDL
+
+
+#include "Versionable.idl"
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module RTC {
+
+  /**
+   *  Base interface for all RTC services.
+   *  Services are objects that provide specific capabilities that can be used
+   *  by real-time components and non real-time users.
+   *  Versionable interfaces.
+   */
+  interface Service :  RTC::Versionable {
+    string Name();
+  };
+
+  /// Sequence of service references
+  typedef sequence<Service> ServiceSequenceType;
+};
+
+#endif

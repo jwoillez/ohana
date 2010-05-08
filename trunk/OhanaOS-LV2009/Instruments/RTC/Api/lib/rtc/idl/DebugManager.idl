@@ -1,0 +1,89 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/DebugManager.idl,v $
+ * $Id: DebugManager.idl,v 1.2 2007/09/27 23:25:59 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * The interface defintion for the RTC logging system.
+ * @ingroup Logging
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:59 $
+ */
+
+#ifndef INC_RTC_DEBUG_MANAGER_IDL
+#define INC_RTC_DEBUG_MANAGER_IDL
+
+#include "Service.idl"
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module RTC {
+  module Debug {
+
+    typedef sequence<string> GroupSequenceType;
+
+    interface GroupManager;
+    typedef sequence<GroupManager> GroupManagerSequenceType;
+
+    /**
+     * @addtogroup Logging
+     * @{
+     */
+    /**
+     * Provides remote clients with a way to change the characteristics and
+     * behavior of the logging of an RTC system.
+     */
+    interface Manager : RTC::Service {
+
+      /// Constant string for the logging manager name on an RTC system. The
+      /// logging manager on an RTC system is always connected to the RTC
+      /// service named "DebugManager"
+      const string ServiceName = "DebugManager";
+
+      /// @return list of logging group managers the logging manager is managing
+      GroupManagerSequenceType List();
+      /// @return Logging group manager for the given name
+      GroupManager Find(in string Name);
+    };
+
+    /**
+     * Provides remote clients with a way to specify what kind of logging
+     * and at what level the client wants to see messages out of an RTC system.
+     * For example, a client might want to only see output from telemetry, while
+     * another might want output from hardware but no telemetry. This manager
+     * provides the interface to make it possible for clients to do that.
+     */
+    interface GroupManager {
+
+      /// Thrown when no group is found for a request group
+      exception InvalidGroup {
+        /// Group given that was not found
+        GroupSequenceType Groups;
+      };
+
+      /// Current logging level of the group
+      long Level();
+      /// Set the current logging level of the group
+      void SetLevel(in long L);
+
+      /// @return List of groups the logging group manager is managing
+      GroupSequenceType Groups();
+      /// Unmask logging output from the given group
+      void EnableGroups(in GroupSequenceType G) raises (InvalidGroup);
+      /// Mask logging output from the given group
+      void DisableGroups(in GroupSequenceType G) raises (InvalidGroup);
+    };
+    /**
+     * @}
+     * endgroup Logging
+     */
+  };
+};
+
+#endif

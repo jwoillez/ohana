@@ -1,0 +1,46 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/AnyDecode.idl,v $
+ * $Id: AnyDecode.idl,v 1.2 2007/09/27 23:25:54 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @addtogroup Archive
+ * @{
+ */
+
+/**
+ * @file
+ * The interface definition for handling "Any" data types.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:54 $
+ */
+
+module Archive {
+
+  //! A list of aliases for an element to facilitate calling an any by several
+  //! different names.
+  typedef sequence<string> ALIAS_LIST;
+
+  struct AnyElement {
+    string sName;
+    long iIndex;
+    string Kind;
+    ALIAS_LIST Aliases;
+    long iParentId;
+    string Value;
+  };
+
+  //! A list of @a AnyElement structures.
+  typedef sequence<AnyElement> ANY_ELEMENT_LIST;
+};
+
+/**
+ * @}
+ * end Archive
+ */

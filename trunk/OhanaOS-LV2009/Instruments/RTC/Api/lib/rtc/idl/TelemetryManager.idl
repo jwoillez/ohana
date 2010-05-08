@@ -1,0 +1,218 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/TelemetryManager.idl,v $
+ * $Id: TelemetryManager.idl,v 1.2 2007/09/27 23:26:04 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * Interface definitions for the RTC Telemetry Manager.
+ * @ingroup Telemetry
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002-2004, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:04 $
+ */
+
+#ifndef INC_RTC_TELEMETRY_MANAGER_IDL
+#define INC_RTC_TELEMETRY_MANAGER_IDL
+
+#include <CosEventComm.idl>
+#include "Service.idl"
+#include "TelemetryServer.idl"
+#pragma prefix "rtc.jpl.nasa.gov"
+
+module RTC {
+  module Telemetry {
+
+    /// Forward declarations
+    interface Supplier;
+    typedef sequence<Supplier> SupplierSequenceType;
+    interface SupplierIterator;
+
+
+    /**
+     * Telemetry Manager interface.
+     * This object is a telemetry supplier locater.
+     * @ingroup Telemetry
+     */
+    interface Manager : RTC::Service {
+
+      /// Service name registered with the CPU Manager
+      const string ServiceName = "TelemetryManager";
+
+      /// Supplier not known to the manager
+      exception NotFound {};
+
+      /**
+       * Iterate on list of telemetry suppliers known to the telemetry manager.
+       * @param N Maximum number of supplier list to return at a time
+       * @param Items First N suppliers
+       * @param SupplierIter Iterator to remaining suppliers
+       */
+      void ListSuppliers(in unsigned long N,
+                         out SupplierSequenceType Items,
+                         out SupplierIterator SupplierIter);
+
+      /**
+       * Locate and return supplier by name.
+       * @param ChannelName The name of the channel the supplier published to.
+       * @return The requested supplier
+       * @throw NotFound The specified supplier is not known
+       */
+      Supplier FindSupplier(in RTC::NameType ChannelName)
+        raises (NotFound);
+    };
+
+
+    /**
+     * Telemetry supplier interface.
+     * This object allows users to control the
+     * publishing mode of telemetry suppliers.
+     * @ingroup Telemetry
+     */
+    interface Supplier : CosEventComm::PushSupplier {
+
+      /// Telemetry supplier publishing modes
+      enum PublishModeType {
+        OFF,         ///< Publish no telemetry
+        FULL_RATE,   ///< Publish all values pushed
+        SLICE,       ///< Publish sliced subset
+        SAMPLE,      ///< Publish sampled subset
+        VALUE_CHANGE ///< Publish when value changes
+      };
+
+      /// Parameter is out of range
+      exception OutOfRange {
+        double mMin;
+        double mMax;
+      };
+
+      /**
+       * Parameters for slicing telemetry values to obtain a
+       * subset.
+       * Example: A telemetry generator running at 10 Hz and with an
+       * buffer period of 1 second would create the following
+       * full rate data stream:
+       *  | -------- Packet 0 -----_- |------- Packet 1 --------|
+       *   X(0)  X(.1)  ....   X(1.0)   X(1.1) X(1.1)...  X(1.9)
+       *
+       * A slice with an offset of 0.2 seconds an elapsed time of of 0.6
+       * seconds and a decimation factor of 2 would be:
+       *
+       *  | -------- Packet 0 ------ |------- Packet 1 --------|
+       *   X(.2)  X(.4)  ....   X(.6)  X(1.2) X(1.4)...  X(1.6)
+       *
+       * The output period of the supplier determines the inter-packet
+       * time spacing.  The slice parameters determine the values within
+       * a single packet.
+       */
+      struct SliceParameters {
+        /// Seconds relative to the telemetry output period for the first
+        /// value in a telemetry packet
+        double dOffsetTime;
+
+        /// The total number of seconds of data in the telemetry slice
+        double dElapsedTime;
+
+        /// Decimation factor applied to the telemetry data
+        long lDecimationFactor;
+      };
+
+      /**
+       * Publishing state of the telemetry supplier.
+       */
+      struct State {
+        boolean Connected;      ///< Connection status
+        PublishModeType Mode;   ///< Publishing mode
+        long lPriority;         ///< Supplier priority
+        double dPacketPeriod;   ///< Seconds between each telemetry packet
+        double dGenerationRate; ///< Rate of individual telemetry values
+        SliceParameters Slice;  ///< Slice parameters
+      };
+
+      /// @return Name of the telemetry channel supplier is connected to
+      RTC::NameType GetName();
+
+      /**
+       * Set the publishing mode
+       * @param Mode The new publishing mode
+       */
+      void SetMode(in PublishModeType Mode);
+
+      /**
+       * Set the supplier priority.  Convention is OS dependent but this should
+       * eventually get mapped in a standard way.
+       * @param Priority The new supplier priority
+       * @throws OutOfRange Priority is invalid
+       */
+      void SetPriority(in long Priority) raises (OutOfRange);
+
+      /**
+       * Set the period at which telemetry is turned into a packet and sent to
+       * consumers.
+       *   - A full rate supplier getting values at 1kHz with
+       *     a packet period of 1 second will have 1000 values in
+       *     each packet.
+       *   - A sliced supplier getting values at 1kHz with
+       *     a packet period of 1 second, an offset time of 0 seconds, an
+       *     elapsed time of 1 second and a decimation factor of 2  will have
+       *     500 values in each packet.
+       *   - A sampled supplier with a packet period of 1 second will sample
+       *     and publish a single value every second.
+       *   - A value change supplier with a packet period of 1 will force publish
+       *     its value in a packet if the value has not changed in the last second.
+       *     Setting the packet period to -1 for a value change supplier turns off
+       *     forced publishing.
+       * @param Period New packet period.
+       * @throws OutOfRange The period is not supported by the supplier in the
+       * current publish mode.
+       */
+      void SetPacketPeriod(in double Period) raises (OutOfRange);
+
+      /**
+       * Set the telemetry slicing parameters used when supplier is in
+       * the SLICE mode.
+       * @param Slice The new slicing parameters
+       * @throws OutOfRange The slice parameters are invalid for the current
+       * packet period.
+       */
+      void SetSliceParameters(in SliceParameters Slice) raises (OutOfRange);
+
+      /// @return Supplier state
+      State GetState();
+
+      /// @return Supplier metadata
+      MetaData GetMetaData();
+    };
+
+
+    /**
+     * CORBA Iterator for telemetry suppliers
+     * @ingroup Telemetry
+     */
+    interface SupplierIterator {
+
+      /**
+       * Get the next suppler object.
+       * @param @S The next supplier
+       * @return TRUE if the supplier is valid FALSE otherwise
+       */
+      boolean NextOne(out Supplier S);
+
+      /**
+       * Get next set of suppliers and update the iterator
+       * @param @N Max number of suppliers to return
+       * @param @Suppliers Next set of suppliers
+       * @return TRUE if the supplier list is valid
+       */
+      boolean NextN(in unsigned long N, out SupplierSequenceType Suppliers);
+
+      /// Destroy iterator
+      void Destroy();
+    };
+  };
+};
+#endif

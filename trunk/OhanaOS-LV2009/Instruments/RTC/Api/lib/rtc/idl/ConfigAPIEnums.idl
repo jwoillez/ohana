@@ -1,0 +1,180 @@
+/**
+ * $RCSfile: ConfigAPIEnums.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:56 $
+ */
+
+
+/**
+ * @file
+ * The idefinitions of several configurator enumerated types.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:56 $
+ */
+
+#ifndef INC_CONFIGSERVER_ENUMS_IDL
+#define INC_CONFIGSERVER_ENUMS_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "ConfigAPICommon.idl"
+
+module RTC {
+  module Configuration {
+
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+    /**
+     * Idenfies the current repository status of an item.
+     * The order is important because stuff is stored in databases this way!
+     */
+    enum ItemRevisionStatus
+      {UNKNOWN,           ///< The item status is unknown or cannot be determined
+       UP_TO_DATE,        ///< The item in the workspace and in the repository are the same
+       LOCALLY_MODIFIED,  ///< The item in the workspace has been changed from the one in the repository
+       LOCALLY_ADDED,     ///< The item is newly added to the workspace and is not in the repository
+       LOCALLY_REMOVED,   ///< The item is in the repository but was removed from the workspace
+       NEEDS_CHECKOUT,    ///< The item in the repository was changed since the workspace was checked out
+       NEEDS_MERGE,       ///< The item in the repository and the workspace item changed independently
+       REMOVED            ///< The item in the workspace and the item in the repository are removed
+      };
+
+    /**
+     * Identifies the database vendor so that we can use appropriate syntax.
+     */
+    enum DatabaseVendor
+      {UNKNOWN_VENDOR,  ///< used if the vendor is unknown or cannot be determined
+       POSTGRES,        ///< use PostgreSQL syntax and commands
+       ODBC,            ///< use syntax and commands from JDBC/ODBC bridge. NOT CURRENTLY SUPPORTED.
+       SYBASE           ///< use PostgreSQL syntax and commands. NOT CURRENTLY SUPPORTED.
+      };
+
+    /**
+     * Identifies the kind of object-member, whether it is a scalar or array.
+     */
+    enum ObjectKind
+      {UNKNOWN_KIND,        ///< The item kind is unknown or cannot be determined
+       SCALAR_KIND,         ///< The item is a scalar (not an array)
+       FIXED_ARRAY_KIND,    ///< The item is a fixed array. This type is deprecated.
+       VARYING_ARRAY_KIND   ///< The item is a varying array.
+      };
+
+    /**
+     * Identifies the kind of instance, whether it is a scalar or array.
+     */
+    enum InstanceArrayHolderStatus
+      {UNKNOWN_STATUS,      ///< The item kind is unknown or cannot be determined
+       ARRAY_STATUS,        ///< The item is an array
+       SCALAR_STATUS        ///< The item is a scalar
+      };
+
+    /**
+     * Identifies the selection status of an instance or member.
+     */
+    enum InstanceSelection
+      {UNKNOWN_SELECTION,    ///< The item status is unknown or cannot be determined
+       DEFAULT_SELECTION,    ///< The item status is default
+       OVERRIDE_SELECTION,   ///< The item status is override
+       LINKED_SELECTION      ///< The item status is linked
+      };
+
+    /**
+     * Identifies the kind of version.
+     */
+    enum VersionKind
+      {UNKNOWN_VERSIONKIND,   ///< The version kind is unknown or cannot be determined
+       TAG,                   ///< The version is an immutable (CVS-like) tag
+       BRANCH                 ///< The version is a branch
+      };
+
+    /**
+     * Identifies the configurability of an object-member.
+     */
+    enum ConfigurabilitySelection
+      {UNKNOWN_CONFIGURABILITY,  ///< The configurability is unknown or cannot be determined
+       CONSTRUCTION,             ///< The item can be configured only at construction time
+       INITIALIZATION,           ///< The item can be configured at construction or initialization
+       DYNAMIC                   ///< The item can be configured at any time
+      };
+
+    /**
+     * Identifies the format for presentation of the item value.
+     */
+    enum FormatSelection
+      {UNKNOWN_FORMAT,     ///< The format is unknown or cannot be determined
+       DEFAULT_FORMAT,     ///< Use the default format for the item
+       DECIMAL_FORMAT,     ///< Use base-ten decimal notation
+       HEX_FORMAT,         ///< Use hexadecimal notation
+       OCTAL_FORMAT,       ///< Use octal notation
+       IMAGE_FORMAT,       ///< The item is an image and should be presented with an image viewer.
+       FILENAME_FORMAT,    ///< The item is a filename and should be edited with a file chooser.
+       BINARY_FORMAT       ///< The item is some other kind of binary data.
+      };
+
+    /**
+     * Identifies the database version.
+     */
+    enum DatabaseVersion
+      {UNKNOWN_VERSION,   ///< The version is unknown or cannot be determined
+       V2R3,              ///< For version 2
+       V3R0,              ///< For version 3
+       V3R1,              ///< For version 3
+       V3R2,              ///< For version 3
+       V3R3,              ///< For version 3
+       V3R4,              ///< For version 3
+       V3R5,              ///< For version 3
+       V3R6,              ///< For version 3
+       V3R7,              ///< For version 3
+       V3R8,              ///< For version 3
+       V3R9,              ///< For version 3
+       V3R10              ///< For version 3
+      };
+
+    /**
+     * For primitive Any values (like instance override value) provides
+     * precomputed information about the base type. This usually controls the
+     * kind of GUI widget used to edit it.
+     */
+    enum PrimitiveBaseType
+      {UNKNOWN_PRIMITIVE_BASETYPE,   ///< The base type is unknown or cannot be determined
+       OTHER_BASETYPE,               ///< Some other base type that we don't have special handling for
+       BOOLEAN_BASETYPE,             ///< Base type is a boolean
+       ENUMERATION_BASETYPE          ///< Base type is an enumeration
+      };
+
+    /**
+     * There are several types of query supported and this attribute of Query
+     * indicates which one it is.
+     */
+    enum QueryKind
+    {UNKNOWN_QUERYKIND,               ///< The query kind is unknown or cannot be determined
+     PRIMITIVE_ELEMENTSET_QUERYKIND,  ///< The query specifies instance members used to define a set of primitives
+     ELEMENTSET_QUERYKIND,            ///< The query specifies a fixed set of items
+     SEARCH_QUERYKIND                 ///< The query specifies search criteria evaluated dynamically
+    };
+
+    /**
+     * Helps determine what a user can do with the configuration
+     */
+    enum UserCategory
+      {NOT_A_USER,        ///< Returned by acceptUser if user is unknown
+       OPERATOR,          ///< A normal user of the repository for add/change/delete of values
+       ENGINEER,          ///< A user who is authorized to change structure and create workspaces
+       ADMINISTRATOR      ///< A user who has authority to do anything including create users and wipe out the DB
+      };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+#endif //INC_CONFIGSERVER_ENUMS_IDL
+

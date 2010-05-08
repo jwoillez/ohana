@@ -1,0 +1,35 @@
+/** 
+ * The EPICS Channel Access Bridge interface.
+ */
+
+#ifndef INC_EPICSCAIO_IDL
+#define INC_EPICSCAIO_IDL
+
+
+#pragma prefix "keck.jpl.nasa.gov"
+
+module EpicsCaIOModule {
+
+    interface channelIO {
+	
+	exception InvalidType {};
+        exception DoesNotExist {};
+
+	/**
+     	 * Writes the value to the specified channel.
+     	 */
+    	void Write(in string channel, in string value) raises (DoesNotExist, InvalidType);
+
+    	/**
+     	 * Reads the current value of the channel.
+     	 * If the channel is not a numeric this will throw an exception.
+     	 */
+    	double Read(in string channel) raises (DoesNotExist, InvalidType);	
+
+  };
+
+};
+
+	
+
+#endif // INC_EPICSCAIO_IDL

@@ -1,0 +1,82 @@
+/**
+ * $RCSfile: ConfigAPIExceptions.idl,v $
+ * $Revision: 1.2 $
+ * $Date: 2007/09/27 23:25:56 $
+ */
+
+/**
+ * @file
+ * The definitions of Configurator exceptions.
+ * @ingroup Configuration
+ *
+ * @author Michael Deck
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:56 $
+ */
+
+#ifndef INC_CONFIGSERVER_EXCEPTION_IDL
+#define INC_CONFIGSERVER_EXCEPTION_IDL
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "Configuration.idl"
+#include "ConfigAPICommon.idl"
+
+module RTC {
+  module Configuration {
+    /**
+     * @addtogroup Configuration
+     * @{
+     */
+    /**
+     * This exception is thrown when a client cannot connect to a ConfigServer,
+     * or when the server can't create a connection for client callbacks
+     */
+    exception CannotConnect{string message;};
+
+		/**
+                 * This exception is thrown by some operations that try to do
+                 * local I/O
+                 */
+		exception IOException{string message;};
+
+    /**
+     * Master exception for any fatal error thrown by the ConfigServer.
+     */
+    exception ConfigAPIException
+    {
+      string text;                         ///< The text of the message to display to the user
+      StringList traceback;                ///< Java traceback stack; eventually one level only per line
+      StringList messages;                 ///< Some exceptions produce additional messages for the user
+      ConfigAPIObjectHandle originatorID;  ///< The unique identifier of the CORBA Object sending the exception
+    };
+
+    /**
+     * Exception thrown if task was killed by user
+     */
+    exception TaskKilledException
+    {
+      ConfigTaskHandle taskHandle;         ///< The task identifier of the task killed
+      ConfigAPIObjectHandle originatorID;  ///< The unique identifier of the CORBA Object sending the exception
+    };
+
+    /**
+     * Exception thrown if a task (stop/pause/restart) method cannot complete
+     */
+    exception TaskException
+    {
+      string message;                     ///< message contents
+      ConfigTaskHandle taskHandle;        ///< The task identifier of the task
+      StringList traceback;               ///< Java traceback stack; eventually one level only per line
+    };
+    /**
+     * @}
+     * end Configuration
+     */
+  };
+};
+#endif //INC_CONFIGSERVER_EXCEPTION_IDL
+
