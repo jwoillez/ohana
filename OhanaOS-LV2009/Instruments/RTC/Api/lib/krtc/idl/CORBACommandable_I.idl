@@ -1,0 +1,64 @@
+/*********************************************************************
+	Rhapsody	: 4.1 
+	Login		: ljreder
+	Component	: target_SOLARIS 
+	Configuration 	: targetSOLARIS
+	Model Element	: CORBACommandable_I
+//!	Generated Date	: Tue, 3, Jun 2003  
+	File Path	: G:\kss\if\seq\0-2-8-1\src/RTC_Helpers/CORBACommandable_I.idl
+*********************************************************************/
+
+#ifndef RTC_Helpers_CORBACommandable_I_CORBA_IDL
+#define RTC_Helpers_CORBACommandable_I_CORBA_IDL
+
+#define _OMFLAT_IMPLEMENTATION  1
+
+
+//## package RTC_Helpers 
+
+//----------------------------------------------------------------------------
+// RTC_Helpers/CORBACommandable_I.idl                                                                  
+//----------------------------------------------------------------------------
+
+module CORBACommandableModule {
+//## class CORBACommandable_I 
+interface CORBACommandable_I  {
+//  Interface Attributes
+//  Interface Operations
+
+
+////    User explicit entries     ////
+
+    
+    //## operation Halt() 
+    void Halt();
+    //## operation Off() 
+    void Off();
+    //## operation On() 
+    void On();
+    //## operation ReInit() 
+    void ReInit();
+    //## operation SimulateOff() 
+    void SimulateOff();
+    //## operation SimulateOn() 
+    void SimulateOn();//  Interface Attributes
+//  Interface Operations
+
+
+////    User implicit entries     ////
+
+    
+    
+    
+};
+typedef sequence<CORBACommandable_I> CORBACommandable_ISeq;
+};
+
+
+
+#endif
+
+/*********************************************************************
+	File Path	: G:\kss\if\seq\0-2-8-1\src/RTC_Helpers/CORBACommandable_I.idl
+*********************************************************************/
+

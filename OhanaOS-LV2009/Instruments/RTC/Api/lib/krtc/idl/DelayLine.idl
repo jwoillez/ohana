@@ -1,0 +1,243 @@
+
+#ifndef DelayLine_IDL
+#define DelayLine_IDL
+
+#include "RTCCore.idl"
+#include "SequenceTypes.idl"
+
+// Prefix all IDL types 
+#pragma prefix "keck.jpl.nasa.gov"
+
+
+// module declaration for delay line related types and interfaces
+module KeckDelayLineModule {
+
+  struct Target {
+    double dLaserPosition;
+    double dRate;
+    long long iActivationTime;
+  };
+  // Delay line target trajectory
+  
+  typedef sequence<Target> TARGET_LIST;
+
+  struct DitherCalibrationInfo {
+    double dAmplitude;
+    double dPhase;
+    double dDistortion;
+  };
+  // Delay line dither calibration characteristics
+
+  struct DitherTimingInfo {
+    double Frequency;
+    double DutyCycle;
+    double IntegrationPeriod;
+    double TotalIntegrationTime;
+  };
+  // Delay line dither configuration parameters
+
+  struct DitherCalibrationCache {
+    double PreDistortFactor;
+    double CalibratedGain;
+  };
+  // Delay line dither calibration settings
+
+    
+  enum SERVO_MODE { 
+    SM_OFF, 
+    SM_FRONT, 
+    SM_BACK, 
+    SM_TRACK, 
+    SM_CREEPFRONT, 
+    SM_CREEPBACK, 
+    SM_DITHER_CALIBRATE 
+  };
+  typedef sequence<SERVO_MODE> SERVO_MODE_LIST;
+
+  enum XC_DITHER_TYPE {
+    DT_TRIANGLE,
+    DT_SQUARE
+  };
+  typedef sequence <XC_DITHER_TYPE> XC_DITHER_TYPE_LIST;
+   
+
+  typedef RTC::DoubleSequenceType DitherWaveformType;
+  typedef sequence<DitherWaveformType> DitherWaveformSequenceType;
+
+ interface DelayLine : RTCCore::RTCObject {
+  // Interface to a single delay line object
+
+    exception InternalError {};
+    // internal delay line error - this exception indicates that there is a bug
+    // in the delay line software
+
+    exception Aborted {
+      string sAbortedBy;
+    };
+    // delay line command aborted
+
+    exception FrontNotFound {};
+    // delay line searches but cannot find the front limit sensor(s)
+
+    exception BackNotFound {};
+    // delay line searches but cannot find the back limit sensor(s)
+
+    exception HomeNotFound {};
+    // delay line searches but cannot find the home sensor
+
+
+    exception InvalidTarget {};
+    // the operation cannot be performed on the target specified.
+
+    exception TargetOutOfRange {};
+    // the specified target position is not a valid delay line position
+
+    exception IllegalDitherParameters {
+      boolean bIllegalAmplitude;
+      boolean bIllegalRate;
+    };
+
+    exception DitherCalibrationFailed {};
+    // delay line fails to calibrate the dither pzt within desirable tolerances
+
+    exception InvalidPasses {};
+
+
+    void ClearLaserCounter () raises (InternalError);
+    // Resets the delay line laser counter to 0
+
+    void Idle () raises (InternalError, Aborted);
+    // Brings delay line cart to a stop and leaves it idle
+    // This command does not wait for the delay line velocity to reach
+    // 0 before returning.
+    // Aborts: Idle, Front, Back, HomeSet, HomeCheck, MoveAbsolute, MoveRelative,
+    // Track and CalibrateDither commands
+
+    void Front () raises (InternalError, FrontNotFound, Aborted);
+    // Moves delay line to the front of the track.
+    // This command blocks until the front is reached or the command is aborted.
+    // Aborts: Idle, Front, Back, HomeSet, HomeCheck, MoveAbsolute, MoveRelative, Track and CalibrateDither commands
+
+    void Back () raises (InternalError, BackNotFound, Aborted);
+    // Moves delay line to the back of the track.
+    // This command blocks until the back is reached or the command is aborted.
+    // Aborts: Idle, Front, Back, HomeSet, HomeCheck, MoveAbsolute, MoveRelative,
+    // Track and CalibrateDither commands
+
+
+
+    void HomeSet () raises (InternalError, HomeNotFound, Aborted);
+    // Moves delay line to its home position clears the laser counter upon crossing home.
+    // This command blocks until the home sensor is reached or the command is aborted.
+    // Aborts: Idle, Front, Back, HomeSet, HomeCheck, MoveAbsolute, MoveRelative,
+    // Track and CalibrateDither commands
+
+    double HomeCheck () raises (InternalError, HomeNotFound, Aborted);
+    // Moves delay line to its home position and returns the measured laser postion latched when
+    // the sensor is crossed (units of laser counts) ).
+    // This command blocks until the home sensor is reached or the command is aborted.
+    // Aborts: Idle, Front, Back, HomeSet, HomeCheck, MoveAbsolute, MoveRelative,
+    // Track and CalibrateDither commands
+
+    void Track () raises (InternalError, Aborted);
+    // Initiates tracking behavior of the delay line to follow the current delay line target
+    // that is a superposition of all enabled target source trajectories according to the designed
+    // closed loop response.
+    // This command does not block since tracking is a continuing action and returns once the
+    // delay line is put into the tracking mode.
+    // Aborts: Idle, Front, Back, HomeSet, HomeCheck, MoveAbsolute, MoveRelative,
+    // Track and CalibrateDither commands
+
+    void SetManualTarget (in Target DlTarget) raises (InternalError);
+    void SetOpenLoopTarget (in Target DlTarget) raises (InternalError);
+
+    void DitherOn () raises (InternalError);
+    // Output the dither waveform to the dither PZT
+    // Aborts: None
+
+    void DitherOff () raises (InternalError);
+    // Disable dither waveform output to the dither PZT
+    // Aborts: None
+
+    /**
+     * Check dither calibation waveform.
+     * This command blocks until the dither check is complete or the 
+     * command is aborted.
+     * Returns calibration characteristics in DitherCalibrationInfo.
+     * Aborts: Idle, Front, Back, HomeSet, HomeCheck, 
+     * Track and CalibrateDither commands
+     */
+    DitherCalibrationInfo CheckDither () 
+      raises (InternalError, DitherCalibrationFailed, Aborted);
+ 
+    /**
+     * Calibrate the dither pzt waveform.
+     * This command blocks until the dither calibration is complete or the 
+     * command is aborted.
+     * Returns calibration characteristics in DitherCalibrationInfo.
+     * Aborts: Idle, Front, Back, HomeSet, HomeCheck, 
+     * Track and CalibrateDither commands
+     */
+    DitherCalibrationInfo CalibrateDither () 
+      raises (InternalError, DitherCalibrationFailed, Aborted);
+    
+
+    /**
+     * Pass in the timing parameters from the waveform file to
+     * set up the dither.
+     */
+    void SetDitherTimingParameters(in DitherTimingInfo TimingParms)
+      raises (InternalError, IllegalDitherParameters);
+
+
+    /**
+     * Set the stroke parameter for dither.
+     */
+    void SetDitherStroke(in double Stroke);
+
+    /**
+     * Get the calibration info and allow us to set it again; so we don't have
+     * to re-calibrate dither.
+     */
+    DitherCalibrationCache GetDitherCalibration();
+    void SetDitherCalibration(in DitherCalibrationCache CachedCalibration);
+
+    void SetStellarPasses (in unsigned long uiPasses) raises (InvalidPasses);
+    
+    void CtMetrologyOn ();
+    void CtMetrologyOff ();
+
+    void DitherGateOn ();
+    void DitherGateOff ();
+
+   void FluxGateOn ();
+   void FluxGateOff ();
+
+   void NullPeakGateOn ();
+   void NullPeakGateOff ();
+
+   void AccelerometerFeedforwardOn ();
+   void AccelerometerFeedforwardOff ();
+
+   void CtInternalOn ();
+   void CtInternalOff ();
+   void CtExternalOn ();
+   void CtExternalOff ();
+
+   void TargetModulationOn ();
+   void TargetModulationOff ();
+
+   void ClearADCEncoder ();
+   void ADCEncoderOn ();
+   void ADCEncoderOff ();
+
+   void XcChopOn ();
+   void XcChopOff ();
+
+  };
+
+
+};
+
+
+#endif

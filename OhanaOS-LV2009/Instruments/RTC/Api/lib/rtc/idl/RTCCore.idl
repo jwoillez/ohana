@@ -1,0 +1,344 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/RTCCore.idl,v $
+ * $Id: RTCCore.idl,v 1.2 2007/09/27 23:26:03 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @addtogroup RTC
+ * @{
+ */
+
+/**
+ * @file
+ * The interface definition for the RTC core objects and modules.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:26:03 $
+ */
+
+#ifndef INC_RTC_CORE_IDL
+#define INC_RTC_CORE_IDL
+
+// Prefix all IDL types
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "Ping.idl"
+#include "SystemId.idl"
+
+
+module RTCCore {
+
+  // forward declarations
+  interface RTCObject;
+  interface RTCModule;
+  interface CPUManager;
+  interface ConfigurationManager;
+
+  /**
+   * Multipurpose exceptions.
+   * The TAO exception macros require IDL-defined exceptions,
+   * though these exceptions may not be exposed to the CORBA interface.
+   */
+  exception NotCreated{};
+  exception NotFound{};
+  exception NotInitialized{};
+
+  /**
+   * Identify objects, configuration entries, and telemetry channels.
+   */
+  typedef sequence<string> NAME;
+  typedef sequence<RTCCore::NAME> NAME_LIST; ///< List of names for aggregate operations.
+
+  /**
+   * RTC Core message structure.
+   */
+  struct MESSAGE {
+    string sObjectName; ///< Complete object name of the message sender.
+    string sMessage;    ///< Message text.
+  };
+
+
+  /**
+   * Sequence of messages.
+   */
+  typedef sequence<MESSAGE> MESSAGE_LIST;
+
+  /**
+   * RTC Core error info structure.
+   */
+  struct ERROR_INFO {
+    long iTaskId;       ///< Task id of the task generating the error.
+    string sObjectName; ///< Complete object name of the error reporter.
+    string sMethodName; ///< Method/function where the error occured.
+    string sError;      ///< Error text.
+  };
+
+  /// sequence of error info
+  typedef sequence<ERROR_INFO> ERROR_INFO_LIST;
+
+
+  struct ObjectId {
+    string sName; ///< Name of the object usually an ordinal.
+    string sType; ///< Type of the object.
+  };
+
+  struct ModuleInfo {
+    string sName;         ///< Name of the module.
+    string sObjectFile;   ///< File containing object code for the module.
+    string sInitFunction; ///< Name of the module intialization function.
+  };
+
+  /// State of the CPU manager object
+  enum CPU_STATE { IDLE, RUNNING };
+
+  // VxWorks task information structure
+  struct TaskInfo {
+    long iId;           // VxWorks task id
+    string sName;       // VxWorks task name
+    long iPriority;     // VxWorks task priority (0-255) where 0 is highest priority
+    long iStatus;       // VxWorks task status
+    long iOptions;      // VxWorks task options
+    long iEntryPoint;   // VxWorks task entry point
+    long iStackSize;    // VxWorks task stack size
+    long iStackCurrent; // VxWorks task current stack position
+    long iStackHigh;    // VxWorks task stack high point
+    long iStackMargin;  // VxWorks task stack margin
+    long iErrorStatus;  // VxWorks task error status
+    long iDelay;        // VxWorks task delay
+  };
+
+
+  struct PeriodicTaskInfo {
+    long iId;           // VxWorks task id
+    string sName;       // VxWorks task name
+    long iPriority;     // VxWorks task priority (0-255) where 0 is highest priority
+    long iStatus;       // VxWorks task status
+    long iOptions;      // VxWorks task options
+    long iEntryPoint;   // VxWorks task entry point
+    long iStackSize;    // VxWorks task stack size
+    long iStackCurrent; // VxWorks task current stack position
+    long iStackHigh;    // VxWorks task stack high point
+    long iStackMargin;  // VxWorks task stack margin
+    long iErrorStatus;  // VxWorks task error status
+    long iDelay;        // VxWorks task delay
+    double dRate;       // Periodic task rate (Hz)
+    double dOffset;     // Periodic task offset (seconds)
+    boolean bEnabled;   // Periodic task enable/disable
+    long iStarvationHistory; // Number of times the periodic task has starved
+  };
+
+  // sequences of task information
+  typedef sequence<TaskInfo> TASK_INFO_LIST;
+  typedef sequence<PeriodicTaskInfo> PER_TASK_INFO_LIST;
+
+
+  // Interface to the CPUManager which is responsible for initalizing the
+  // real-time control system, dyanically loading modules, and dynamically
+  // creating control objects.
+  interface CPUManager : PingModule::PingObject {
+
+    // Thrown if the CPU manager fails to complete the run operation
+    exception CPUManagerNotRunning {};
+
+    // Reasons why an RTC module could not be created
+    enum NOT_CREATED_REASON { LOAD_FAILED, INVALID_INIT_FUNCTION, INIT_FUNCTION_FAILED };
+
+    // Module initialization function did not successfully create a module
+    exception ModuleNotCreated {
+      NOT_CREATED_REASON Reason;
+    };
+
+
+    // Starts all core services on the CPU.
+    void Run () raises (CPUManagerNotRunning);
+
+
+    // Re-synchronizes CPU managers system time.
+    void SynchronizeTime () raises (CPUManagerNotRunning);
+
+
+    // Creates an RTC module by loading object code associated with ModuleId.
+    // Returns reference to the new module object.
+    // Throws exceptions if module already exists, could not be loaded, intialization function
+    // not found, or if the module could not be created.
+    RTCModule CreateModule (in ModuleInfo Info) raises (ModuleNotCreated);
+
+    // Returns the state of the CPU manager
+    CPU_STATE State ();
+
+    const long SERIALIZER_NO_WAIT = 0;
+    const long SERIALIZER_WAIT_FOREVER = -1;
+
+    // Timeout occured while waiting for the CPU serialization token
+    exception TimeOut {};
+
+    // The server CPU manager was not available to give the CPU serialization token
+    exception ServerNotAvailable {};
+
+    // Request the CPU serialization token from the server CPU manager.  iTimeOut specifies how
+    // many seconds to wait for the token before timing out. iSteal specifies how long
+    // the server CPU manager should wait for the token to be released before assuming that the
+    // requestor has gone to la-la land and should therefore steal the token back.
+    void TakeSerializer (in long iTimeOut, in long iSteal) raises (TimeOut, ServerNotAvailable);
+
+    // Releases the CPU serialization token
+    void ReleaseSerializer () raises (ServerNotAvailable);
+
+
+    // Shuts down the CPU Manager - deactivates all RTC Objects and deactivates and unloads all
+    // Modules.  Deactivates itself and  unloads the RTC Core module.
+    oneway void Destroy();
+
+
+    // Operations to get references to CPU manager configuration manager sub-interface
+    ConfigurationManager ConfigMgr ();
+
+    // Returns reference to the spectrum analyzer sub-interface
+    SystemId::SpectrumAnalyzer Analyzer ();
+
+    // VxWorks Task Related Operations
+
+    // Task with specified id does not currently exist
+    exception TaskNotFound {};
+
+    // Returns the task info for all tasks running on the CPU
+    TASK_INFO_LIST TaskInfo ();
+
+    // These three operations suspend, resume, and delete the task
+    // corresponding to the specified task id.  Note: these operations
+    // should not be used on periodic tasks. See periodic counterparts
+    // disable, enable, and delete below.
+
+    // Suspend the task with the specified task id
+    void TaskSuspend (in long TaskId) raises (TaskNotFound);
+
+    // Resume the task with the specified task id
+    void TaskResume (in long TaskId) raises (TaskNotFound);
+
+    // Delete the task with the specified task id
+    void TaskDelete (in long TaskId) raises (TaskNotFound);
+
+
+    // Periodic Task Related Operations
+
+    // Returns the periodic task info for all periodic tasks running on
+    // the CPU.
+    PER_TASK_INFO_LIST PeriodicTaskInfo ();
+
+    // Disables the periodic task scheduler
+    void SchedulerDisable ();
+
+    // Enables the periodic task scheduler
+    void SchedulerEnable ();
+
+    // These three operations enable, disable, and delete the periodic task
+    // corresponding to the specified task id.  Note: using these operations
+    // on a non-periodic task id will throw the TaskNotFound exception.
+
+    // Disable periodic task with specified task id
+    void PeriodicTaskDisable (in long TaskId) raises (TaskNotFound);
+
+    // Enable periodic task with specified task id
+    void PeriodicTaskEnable (in long TaskId) raises (TaskNotFound);
+
+    // Delete periodic task with specified task id
+    void PeriodicTaskDelete (in long TaskId) raises (TaskNotFound);
+
+  };
+
+
+  // Interface to command all configurable objects on a CPU
+  interface ConfigurationManager {
+
+    // Object with specific object name could not be found in the object hierarchy
+    exception ObjectNotAvailable {};
+
+    // Configure the specified object
+    void Configure (in RTCCore::NAME ObjectName) raises (ObjectNotAvailable);
+
+    // Configure the specified object and all children, grandchildren, etc
+    void RecursiveConfigure (in RTCCore::NAME ObjectName) raises (ObjectNotAvailable);
+
+    // Save specified object's configuration
+    void SaveConfiguration (in RTCCore::NAME ObjectName) raises (ObjectNotAvailable);
+
+    // Save specified object's and its children, grandchildren etc. configuration
+    void RecursiveSaveConfiguration (in RTCCore::NAME ObjectName) raises (ObjectNotAvailable);
+
+  };
+
+
+  // Interface for generic RTC modules.  RTC modules correspond
+  // to loadable object files.  Specialized modules specify interfaces that
+  // allow users to create RTC Objects
+  // In order to bootstrap a specific RTC module the module implementation must define
+  // an initialization function that can be dynamically identified once the object file is
+  // loaded.  This initialization function creates a global instance of the module
+  interface RTCModule : PingModule::PingObject {
+
+    // Module unabled to create an RTC object
+    exception ObjectNotCreated {};
+
+    // Returns module info
+    ModuleInfo Info ();
+
+    // Creates an RTC object with the specified id
+    RTCObject Create (in ObjectId Id) raises (ObjectNotCreated);
+
+    // Deactivates the module, unregisters the module with the RTC Core, and
+    // unloads the module.
+    oneway void Shutdown ();
+  };
+
+
+  // Types for use with command logging telemetry
+
+  // List of arguments to a command
+  typedef sequence<any> COMMAND_ARGUMENTS;
+
+  // Progress of a command excecution
+  enum COMMAND_PROGRESS { CP_BEGIN, CP_IN_PROGRESS, CP_COMPLETE, CP_ABORTED, CP_FAILED };
+
+  // Command information structure
+  struct Command {
+    string sCommandName; // Name of the command
+    COMMAND_ARGUMENTS Arguments; // Command arguments
+    COMMAND_PROGRESS Progress; // Command progress
+    any ProgressDetail; // Additional progress info this is up to the user interpret
+  };
+
+  // Sequence of commands
+  typedef sequence<Command> COMMAND_LIST;
+
+  // Generic base interface for all RTC objects
+  interface RTCObject : PingModule::PingObject {
+
+    // Returns object id
+    ObjectId Id ();
+
+    // Deactivates the object.
+    oneway void Destroy ();
+
+  };
+};
+
+module RTC {
+  // thrown by polyfit when the two valarrays don't match
+  exception BadSize {};
+  // thrown by connectionstrategy when the request object
+  // is not available
+  exception NotConnected {};
+  exception NotInitialized {};
+};
+
+#endif
+
+/**
+ * @}
+ * end RTC
+ */

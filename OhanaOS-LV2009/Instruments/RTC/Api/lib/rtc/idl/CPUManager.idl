@@ -1,0 +1,84 @@
+/* $Source: /usr/local/cvsroot/kroot/kss/if/rtc/idl/CPUManager.idl,v $
+ * $Id: CPUManager.idl,v 1.2 2007/09/27 23:25:55 intdev Exp $
+ * -*- Mode: c++ -*-
+ */
+
+/**
+ * @file
+ * The interface definitions for RTC CPU Manager.
+ *
+ * @author Richard Johnson
+ * @par Address:
+ * JPL m/s 171-113, Pasadena California 91109
+ * @par Copyright:
+ * (c) 2002, California Institute of Technology, Pasadena CA
+ * @version $Revision: 1.2 $
+ * @date $Date: 2007/09/27 23:25:55 $
+ */
+
+#ifndef INC_RTC_CPU_MANAGER_IDL
+#define INC_RTC_CPU_MANAGER_IDL
+
+#pragma prefix "rtc.jpl.nasa.gov"
+
+#include "Destructible.idl"
+#include "Loadable.idl"
+#include "Versionable.idl"
+#include "Service.idl"
+
+
+module RTC {
+
+  interface CpuManager;
+
+  /// Sequence of CPU managers
+  typedef sequence<CpuManager> CpuManagerSequenceType;
+
+  /**
+   * The CpuManager interface provides the initial point of contact between
+   * users and the real-time components of the RTC software.  Each real-time
+   * CPU, identified by a crate name and a CPU number, has one and only one
+   * CpuManager object associated with it.
+   * The CpuManager is basically a service mananger allowing users to find
+   * services available to users.  Services can be either built in to the
+   * CPU Manager implementation or dynamically loaded by users.
+   *
+   * For example the CpuManager implementation provided by RTC::CpuManager_i
+   * provides the following built in services:
+   *
+   * - DynamicLoader - enables users to dynamically load services and object
+   *   factories
+   * - FactoryFinder - enables users to locate object factories available on
+   *   the CPU
+   * - ObjectFinder  - enables users to locate RTObjects available on the CPU
+   * - ConfigurationManager - enables users to dynamically configure various
+   *                           system and user components
+   * - HardwareManager - enables users to locate hardware components
+   *   available on the CPU
+   * - Scheduler - enables users to manipulated periodic tasks
+   */
+  interface CpuManager : RTC::Destructible, RTC::Versionable {
+
+    /// CPU Manager Identification structure
+    struct Id {
+      string Crate;  ///< Name of the crate in which the CPU is located
+      string Name; ///< CPU name
+    };
+
+    /// @return The CPU Manager Id
+    Id Identity();
+
+
+    /// @return List of all Services currently available to users
+    RTC::ServiceSequenceType ListServices();
+
+    /**
+     * Get reference to specified service if it exists
+     * @param Name The name of the service
+     * @return RTC service with specified name or nil
+     */
+    RTC::Service FindService(in string Name);
+  };
+};
+
+#endif

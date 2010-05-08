@@ -1,0 +1,282 @@
+
+/**
+ * @file:
+ * Interface definition for the KRTC Fringe Tracker.
+ *
+ */
+
+
+#ifndef INC_FRINGE_TRACKER_IDL
+#define INC_FRINGE_TRACKER_IDL
+
+
+#include <RTCCore.idl>
+#include <Image.idl>
+#include <Camera.idl>
+#include <PhaseTrackUtils.idl>
+
+#pragma prefix "keck.jpl.nasa.gov"
+
+
+module FringeTrackerModule {
+  
+
+ /**
+  * @enum OPERATION_MODE
+  * Basic operation modes of the fringe tracker.
+  * The response of the fringe tracker to various commands(e.g. On, Off,
+  * Enable, Disable etc.) depends on this mode.
+  */
+  enum OPERATING_MODE {
+    OM_NONE,  ///< Inactive mode
+    OM_ALIGN, ///< Fringe tracker performs alignment functions
+    OM_ZABCD, ///< Fringe tracker performs servo functions for standard 
+              //</ dither V^2, Nuling, and Astrometery
+    OM_DP     ///< Fringe tracker performs servo functions for
+              ///< differential phase measurements 
+  };
+  
+  typedef sequence<OPERATING_MODE> OPERATING_MODE_LIST;
+
+  /**
+   * @enum SERVO_MODE
+   *
+   * An enumerated type which describes the different servo modes of the
+   * fringe tracker.  These have meaning only when the 
+   * operational mode is OM_SERVO.
+   */
+  enum SERVO_MODE { 
+    SM_IDLE,        ///< Fringe tracker is idle      
+    SM_CALIBRATE,   ///< Fringe tracker is performing a calibration
+    SM_TRACK,       ///< Fringe tracker is attempting to track the fringe
+    SM_SPEC_RASTER, ///< Fringe tracker is using a raster pattern on the spec channel
+    SM_ALIGN_RASTER, ///< Fringe tracker is using raster pattern to check alignment
+    SM_CALIBRATE_BRIGHT
+  };
+  
+  typedef sequence<SERVO_MODE> SERVO_MODE_LIST;
+
+  /**
+   * @enum TRACK_MODE
+   *
+   * An enumerated type which describes the different tracking modes of
+   * the fringe tracker.
+   * These have meaning only when the servo mode is SM_TRACK.
+   */
+  enum TRACK_MODE { 
+    TM_SEARCH,    ///< Fringe tracker is searching for a fringe
+    TM_SEMI_LOCK, ///< Fringe tracker verifying that a fringe was found
+    TM_LOCK,      ///< Fringe tracker is locked on a fringe 
+    TM_HOLD,      ///< Fringe tracker holding until there is enough photons
+    TM_ERROR,     ///< Fringe tracker unable to find and lock on a fringe 
+    TM_IDLE       ///< Fringe tracker is not tracking
+  };
+  
+  typedef sequence<TRACK_MODE> TRACK_MODE_LIST;
+
+  /**
+   * @enum CALIBRATION_TAG
+   *
+   * Tags used to differentiate fringe tracker data sets.  These values only 
+   * have meaning when the operational mode is OM_SERVO.
+   */
+  enum CALIBRATION_TAG {
+    CT_NONE,       ///< Normal fringe tracker data
+    CT_DARK,       ///< Dark calibration data
+    CT_BRIGHT,     ///< Bright calibration data 
+    CT_BACKGROUND, ///< Background calibration data
+    CT_FOREGROUND, ///< Foreground calibration data
+    CT_RATIO,       ///< Ratio calibration data
+    CT_RATIO2,       ///< Ratio calibration (other side)
+    CT_CHOP_FOREGROUND, ///< Foreground calibration data, while chopping
+    CT_CHOP_RATIO,      ///< Ratio calibration data, while chopping
+    CT_CHOP_RATIO2      ///< Ratio calibration data (other side), while chopping
+
+  };
+  
+  typedef sequence<CALIBRATION_TAG> CALIBRATION_TAG_LIST;
+  
+
+  /**
+   * @interface FringeTracker FringeTracker.idl FringeTrackerC.h
+   *
+   * Fringe tracker interface.  The fringe tracker is a camera user which 
+   * implies that it depends on a camera object to specify the nature of the 
+   * image data that the fringe tracker acquires.  In other words, the active 
+   * waveform of the associated camera object dictates the position, size, 
+   * and rate of the images that can be read by the fringe tracker.  As a 
+   * camera user, a fringe tracker object can be connected to a specific 
+   * camera object so that the fringe tracker can be notified by the camera 
+   * object of waveform and rate changes. 
+   * (@see CameraModule::CameraUser inteface)
+   */
+  interface FringeTracker : CameraModule::CameraUser {
+
+    const double LOCK_FOREVER = -1.0;
+       
+    // This exception is thrown when a command is issued that is not
+    // supported by the current operational mode   
+    exception InvalidMode {};
+    
+    exception InvalidChannels {};
+    exception InvalidCalibration {};
+    exception Aborted {};
+    
+    /**
+     * Shutsdown the fringe tracker servo or alignment tasks depending on the
+     * current operation mode of the fringe tracker
+     */
+    void Off();
+    
+    /**
+     * Starts the fringe tracker servo or alignment tasks depending on the
+     * current operation mode of the fringe tracker
+     */
+    void On();
+
+    /**
+     * Disables the fringe tracker servo or alignment tasks depending on the
+     * current operation mode of the fringe tracker
+     */
+    void Disable();
+    
+    /**
+     * Enables the fringe tracker servo or alignment tasks depending on the
+     * current operation mode of the fringe tracker
+     */
+    void Enable();
+
+    /**
+     * Idles fringe tracker servo(OM_SERVO only)
+     */
+    void Idle() raises (InvalidMode);
+
+    /**
+     * Performs dark calibration for specified length of time. 
+     *(OM_ALIGN, OM_ZABCD, OM_DP only).
+     */
+    void CalibrateDark(in long iSeconds) 
+      raises (InvalidMode, Aborted);
+
+    void CalibrateBright (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateBackground (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateForeground (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateRatio (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateRatio2 (in long iSeconds) raises (InvalidMode, Aborted);
+
+    void CalibrateChopForeground (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateChopRatio (in long iSeconds) raises (InvalidMode, Aborted);
+    void CalibrateChopRatio2 (in long iSeconds) raises (InvalidMode, Aborted);
+
+   /**
+    * Initiates fringe tracking(OM_ZABCD & OM_DP only)
+    */
+    void Track() raises (InvalidMode);
+
+   /**
+    * Informs fringe tracker of the size of the delay line stroke 
+    * (meters stellar OPD)
+    */
+    void SetStroke(in double dStroke);
+
+   /**
+    *  Sets a dc offset command to the command computed by the fringe tracker
+    *  when performing closed loop control of the delay line 
+    * (meters stellar OPD).  This allows user to set a systematic offset to 
+    * reduce search times.
+    */
+    void SetCommandOffset(in double dOffset);
+    
+   /**
+    * Updates a dc offset command to the command computed by the fringe 
+    * tracker when performing closed loop control of the delay line.  
+    * The updated offset is based on the current offset and the last set of
+    * tracking offsets.
+    */
+    void UpdateCommandOffset();
+
+   /**
+    * reset the search radius to zero (to help with difficult targets that
+    * often lose lock
+    */
+    void ResetSearchCommand ();
+    
+   /**
+    * Sets the nominal wavelength for each pixel of each fringe tracker 
+    * spectrometer channel. If the size of the spectrometers does not match 
+    * the currently selected camera waveform used by the fringe tracker 
+    * (@see CameraUser::SetWaveformProperties) the InvalidChannels exception 
+    * is raised
+    */
+    void SetSpectrometerChannels(in PhaseTrackUtilsModule::SPECTROMETER_STRUCTURES_LIST SpectrometerData)
+      raises (InvalidChannels);
+      
+   /**
+    * Set the calibration data used by the fringe tracker to correct for 
+    * bias, gain, and readnoise to the specified values.  InvalidCalibration 
+    * is raised if Data is not compatible with the currently selected camera
+    * waveform(i.e. there should be calibration data for each pixel of each
+    * spectrometer).  This operation is intended to be used to restore 
+    * calibration data previously obtained using the GetCalibration
+    * operation.
+    */
+    void SetCalibration(in PhaseTrackUtilsModule::Calibration C)
+      raises (InvalidCalibration);
+    
+   /**
+    * Returns the current calibration data used by the fringe tracker.
+    */
+    PhaseTrackUtilsModule::Calibration GetCalibration();
+
+   /**
+    * raster search for brightest spot on the given channel (WL or SPEC).
+    * reports X and Y offset as out arguments
+    */
+    void ServoAlignRaster(in long Channel, in long GoToPeak, 
+                          out double XOffset, out double YOffset);
+
+    void EnableFeedForward ();
+    void DisableFeedForward ();
+
+    void EnableH2OFeedForward ();
+    void DisableH2OFeedForward ();
+
+    void EnableH2OPhaseFeedForward ();
+    void DisableH2OPhaseFeedForward ();
+
+    void EnableH2OGdFeedForward ();
+    void DisableH2OGdFeedForward ();
+
+   /**
+    * methods to enable/disable the GoToPeak raster option
+    * on the WL and spec channels
+    */
+    void EnableWLGoToPeak();
+    void DisableWLGoToPeak();
+    void EnableSpecGoToPeak();
+    void DisableSpecGoToPeak();
+
+   /**
+    * modify the number of WL and SPEC raster iterations
+    */
+    void SetWLRasterCount(in long iRasters);
+    void SetSPECRasterCount(in long iRasters);
+
+    void EnableFourSidedChop ();
+    void DisableChop ();
+
+   /**
+    * Release a hold from another FATCAT
+    */
+    void ReleaseHold();
+
+   /**
+    * Returns the FDL instance name this fringe tracker is using
+    */
+    string GetDelayLineName();
+
+  };
+
+};
+
+#endif // INC_FRINGE_TRACKER_IDL
