@@ -1,11 +1,8 @@
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "novas-lib", "novas-lib\novas-lib.vcproj", "{83D42226-6CCB-42B0-A5E4-BB94AF031CAC}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "novas-lib", "novas-lib\novas-lib.vcxproj", "{83D42226-6CCB-42B0-A5E4-BB94AF031CAC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "novas-dll", "novas-dll\novas-dll.vcproj", "{6888DF84-3B6D-4F21-9B46-70E4B04D110E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{83D42226-6CCB-42B0-A5E4-BB94AF031CAC} = {83D42226-6CCB-42B0-A5E4-BB94AF031CAC}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "novas-dll", "novas-dll\novas-dll.vcxproj", "{6888DF84-3B6D-4F21-9B46-70E4B04D110E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
