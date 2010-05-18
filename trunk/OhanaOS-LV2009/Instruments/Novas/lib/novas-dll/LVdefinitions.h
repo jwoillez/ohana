@@ -7,18 +7,12 @@
 #include <extcode.h>
 
 typedef struct {
-	char type;
-	char number;
-	LStrHandle name;
-} LVbody;
-
-typedef struct {
 	double latitude;
 	double longitude;
 	double height;
 	double temperature;
 	double pressure;
-} LVsite_info;
+} LVon_surface;
 
 typedef struct {
 	LStrHandle catalog;
