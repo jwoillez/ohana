@@ -1,9 +1,9 @@
 /*
-   NOVAS-C Version 2.0 (1 Nov 98)
+   NOVAS-C Version 3.0
    Header file for all source files containing versions of
    NOVAS-C function 'solarsystem'
 
-   Naval Observatory Vector Astrometry Subroutines
+   Naval Observatory Vector Astrometry Software
    C Version
 
    U. S. Naval Observatory
@@ -21,6 +21,11 @@
 
    short int solarsystem (double tjd, short int body, short int origin,
 
-                          double *pos, double *vel);
+                          double *position, double *velocity);
+
+   short int solarsystem_hp (double tjd[2], short body, short origin,
+
+                          double *position, double *velocity);
+
 
 #endif
