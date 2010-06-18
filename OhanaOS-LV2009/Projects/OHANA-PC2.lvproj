@@ -1,6 +1,6 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <Project Type="Project" LVVersion="9008000">
-	<Property Name="varPersistentID:{65D0CE1C-502E-4AC0-B980-EDB01ACA377D}" Type="Ref">/My Computer/OHANA-PC2.lvlib/CentralCarriage/PhysicalPosition</Property>
+	<Property Name="varPersistentID:{65D0CE1C-502E-4AC0-B980-EDB01ACA377D}" Type="Ref">/My Computer/OHANA-PC2.lvlib/CentralCarriage-PhysicalPosition</Property>
 	<Item Name="My Computer" Type="My Computer">
 		<Property Name="server.app.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="server.control.propertiesEnabled" Type="Bool">true</Property>
