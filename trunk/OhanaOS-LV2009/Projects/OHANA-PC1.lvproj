@@ -1,6 +1,6 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <Project Type="Project" LVVersion="9008000">
-	<Property Name="varPersistentID:{82C7FE76-F1C0-4A92-B323-758A7546FB9F}" Type="Ref">/My Computer/OHANA-PC1.lvlib/CentralCarriage-PhysicalPosition</Property>
+	<Property Name="varPersistentID:{82C7FE76-F1C0-4A92-B323-758A7546FB9F}" Type="Ref">/My Computer/CentralCarriage.lvlib/CentralCarriage-PhysicalPosition</Property>
 	<Item Name="My Computer" Type="My Computer">
 		<Property Name="server.app.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="server.control.propertiesEnabled" Type="Bool">true</Property>
@@ -11,7 +11,7 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
-		<Item Name="OHANA-PC1.lvlib" Type="Library" URL="../OHANA-PC1.lvlib"/>
+		<Item Name="CentralCarriage.lvlib" Type="Library" URL="../CentralCarriage.lvlib"/>
 		<Item Name="Server.vi" Type="VI" URL="../../Server/Server.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
