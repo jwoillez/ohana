@@ -1,6 +1,9 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <Project Type="Project" LVVersion="9008000">
-	<Property Name="varPersistentID:{82C7FE76-F1C0-4A92-B323-758A7546FB9F}" Type="Ref">/My Computer/CentralCarriage.lvlib/CentralCarriage-PhysicalPosition</Property>
+	<Property Name="varPersistentID:{43049163-27D1-4D33-BAEC-1029ED8E246B}" Type="Ref">/My Computer/FringeScanner.lvlib/FrameRate</Property>
+	<Property Name="varPersistentID:{98BE5073-E5BB-426C-B455-DD2FF5F99928}" Type="Ref">/My Computer/FringeScanner.lvlib/FramePerFringe</Property>
+	<Property Name="varPersistentID:{FBB4F9C2-2DF8-4AF3-8FF8-4E63E3C66AA4}" Type="Ref">/My Computer/FringeScanner.lvlib/ScanOpd</Property>
+	<Property Name="varPersistentID:{FCF2BC96-52FE-4FDD-BACB-73750BAA0273}" Type="Ref">/My Computer/CentralCarriage.lvlib/PhysicalPosition</Property>
 	<Item Name="My Computer" Type="My Computer">
 		<Property Name="server.app.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="server.control.propertiesEnabled" Type="Bool">true</Property>
@@ -11,7 +14,8 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
-		<Item Name="CentralCarriage.lvlib" Type="Library" URL="../CentralCarriage.lvlib"/>
+		<Item Name="CentralCarriage.lvlib" Type="Library" URL="../../Instruments/CentralCarriage/CentralCarriage.lvlib"/>
+		<Item Name="FringeScanner.lvlib" Type="Library" URL="../../Instruments/FringeScanner/FringeScanner.lvlib"/>
 		<Item Name="Server.vi" Type="VI" URL="../../Server/Server.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
@@ -75,6 +79,23 @@
 			<Item Name="ProcessState-WaitOnStoppped.vi" Type="VI" URL="../../Instruments/Process/ProcessState-WaitOnStoppped.vi"/>
 			<Item Name="ProcessControl-Stop.vi" Type="VI" URL="../../Instruments/Process/ProcessControl-Stop.vi"/>
 			<Item Name="ProcessControl.ctl" Type="VI" URL="../../Instruments/Process/ProcessControl.ctl"/>
+			<Item Name="NicmosStart.vi" Type="VI" URL="../../Instruments/Nicmos/Clients/NicmosStart.vi"/>
+			<Item Name="NICMOS.COMMAND.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.COMMAND.ctl"/>
+			<Item Name="NICMOS.COMMANDBASIC.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.COMMANDBASIC.ctl"/>
+			<Item Name="NICMOS.READOUT.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.READOUT.ctl"/>
+			<Item Name="NICMOS.FILTERCOMMAND.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.FILTERCOMMAND.ctl"/>
+			<Item Name="NICMOS.FILTER.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.FILTER.ctl"/>
+			<Item Name="NicmosStop.vi" Type="VI" URL="../../Instruments/Nicmos/Clients/NicmosStop.vi"/>
+			<Item Name="NICMOS.STATE.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.STATE.ctl"/>
+			<Item Name="NicmosSetReadout.vi" Type="VI" URL="../../Instruments/Nicmos/Clients/NicmosSetReadout.vi"/>
+			<Item Name="Occurence-Wait.vi" Type="VI" URL="../../Instruments/Process/Occurence-Wait.vi"/>
+			<Item Name="ComputePiezoParameters.vi" Type="VI" URL="../../Instruments/FringeScanner/ComputePiezoParameters.vi"/>
+			<Item Name="PIEZO.WAVE.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.WAVE.ctl"/>
+			<Item Name="PiezoStart.vi" Type="VI" URL="../../Instruments/Piezo/Clients/PiezoStart.vi"/>
+			<Item Name="PIEZO.STATE.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.STATE.ctl"/>
+			<Item Name="PIEZO.COMMAND.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.COMMAND.ctl"/>
+			<Item Name="PIEZO.COMMANDBASIC.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.COMMANDBASIC.ctl"/>
+			<Item Name="PiezoStop.vi" Type="VI" URL="../../Instruments/Piezo/Clients/PiezoStop.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>
