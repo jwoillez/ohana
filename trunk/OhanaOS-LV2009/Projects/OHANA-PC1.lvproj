@@ -119,7 +119,6 @@
 			<Item Name="DelayGenerator-CentralCarriage.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGenerator-CentralCarriage.vi"/>
 			<Item Name="DelayGenerator-FringeScannerOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGenerator-FringeScannerOffset.vi"/>
 			<Item Name="AerotechGetTarget.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechGetTarget.vi"/>
-			<Item Name="DelayGeneratorSetOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorSetOffset.vi"/>
 			<Item Name="FringeTrackerInfo.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringeTrackerInfo.ctl"/>
 			<Item Name="FringeTracker-GetState.vi" Type="VI" URL="../../Instruments/FringeTracker/Clients/FringeTracker-GetState.vi"/>
 			<Item Name="FringeTrackerState.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringeTrackerState.ctl"/>
@@ -128,6 +127,8 @@
 			<Item Name="FringeTrackerData.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringeTrackerData.ctl"/>
 			<Item Name="FringeTracker-Scan.vi" Type="VI" URL="../../Instruments/FringeTracker/Clients/FringeTracker-Scan.vi"/>
 			<Item Name="DelayGeneratorGetOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorGetOffset.vi"/>
+			<Item Name="FringeTracker-GetInfo.vi" Type="VI" URL="../../Instruments/FringeTracker/Clients/FringeTracker-GetInfo.vi"/>
+			<Item Name="DelayGeneratorSetOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorSetOffset.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>
