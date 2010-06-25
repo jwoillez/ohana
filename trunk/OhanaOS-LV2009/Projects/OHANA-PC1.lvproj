@@ -1,8 +1,8 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
 <Project Type="Project" LVVersion="9008000">
-	<Property Name="varPersistentID:{43049163-27D1-4D33-BAEC-1029ED8E246B}" Type="Ref">/My Computer/FringeScanner.lvlib/FrameRate</Property>
-	<Property Name="varPersistentID:{98BE5073-E5BB-426C-B455-DD2FF5F99928}" Type="Ref">/My Computer/FringeScanner.lvlib/FramePerFringe</Property>
-	<Property Name="varPersistentID:{FBB4F9C2-2DF8-4AF3-8FF8-4E63E3C66AA4}" Type="Ref">/My Computer/FringeScanner.lvlib/ScanOpd</Property>
+	<Property Name="varPersistentID:{2E37B4F2-DAFE-4F72-9624-A3A112241522}" Type="Ref">/My Computer/DelayGenerator.lvlib/Target</Property>
+	<Property Name="varPersistentID:{57855705-2175-4760-B2D4-40E3CDED5918}" Type="Ref">/My Computer/DelayGenerator.lvlib/Baseline</Property>
+	<Property Name="varPersistentID:{AEADB6C8-F43A-423F-850C-ADD28707FA68}" Type="Ref">/My Computer/DelayGenerator.lvlib/SiteInformation</Property>
 	<Property Name="varPersistentID:{FCF2BC96-52FE-4FDD-BACB-73750BAA0273}" Type="Ref">/My Computer/CentralCarriage.lvlib/PhysicalPosition</Property>
 	<Item Name="My Computer" Type="My Computer">
 		<Property Name="server.app.propertiesEnabled" Type="Bool">true</Property>
@@ -14,9 +14,12 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
+		<Item Name="FringeTracker.lvlib" Type="Library" URL="../../Instruments/FringeTracker/FringeTracker.lvlib"/>
+		<Item Name="Aerotech.lvlib" Type="Library" URL="../../Instruments/Aerotech/Aerotech.lvlib"/>
 		<Item Name="CentralCarriage.lvlib" Type="Library" URL="../../Instruments/CentralCarriage/CentralCarriage.lvlib"/>
-		<Item Name="FringeScanner.lvlib" Type="Library" URL="../../Instruments/FringeScanner/FringeScanner.lvlib"/>
+		<Item Name="DelayGenerator.lvlib" Type="Library" URL="../../Instruments/DelayGenerator/DelayGenerator.lvlib"/>
 		<Item Name="Server.vi" Type="VI" URL="../../Server/Server.vi"/>
+		<Item Name="ServerGUI.vi" Type="VI" URL="../../Server/ServerGUI.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
 				<Item Name="Close Generic Object Refnum__ogtk.vi" Type="VI" URL="/&lt;userlib&gt;/_OpenG.lib/appcontrol/appcontrol.llb/Close Generic Object Refnum__ogtk.vi"/>
@@ -68,6 +71,7 @@
 				<Item Name="NI_FileType.lvlib" Type="Library" URL="/&lt;vilib&gt;/Utility/lvfile.llb/NI_FileType.lvlib"/>
 				<Item Name="Error Cluster From Error Code.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Error Cluster From Error Code.vi"/>
 				<Item Name="Clear Errors.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Clear Errors.vi"/>
+				<Item Name="NI_AALBase.lvlib" Type="Library" URL="/&lt;vilib&gt;/Analysis/NI_AALBase.lvlib"/>
 			</Item>
 			<Item Name="PathConfigurations.vi" Type="VI" URL="../../Instruments/Files/PathConfigurations.vi"/>
 			<Item Name="ServerRunProcess.vi" Type="VI" URL="../../Server/Ressources/ServerRunProcess.vi"/>
@@ -79,23 +83,51 @@
 			<Item Name="ProcessState-WaitOnStoppped.vi" Type="VI" URL="../../Instruments/Process/ProcessState-WaitOnStoppped.vi"/>
 			<Item Name="ProcessControl-Stop.vi" Type="VI" URL="../../Instruments/Process/ProcessControl-Stop.vi"/>
 			<Item Name="ProcessControl.ctl" Type="VI" URL="../../Instruments/Process/ProcessControl.ctl"/>
-			<Item Name="NicmosStart.vi" Type="VI" URL="../../Instruments/Nicmos/Clients/NicmosStart.vi"/>
-			<Item Name="NICMOS.COMMAND.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.COMMAND.ctl"/>
-			<Item Name="NICMOS.COMMANDBASIC.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.COMMANDBASIC.ctl"/>
 			<Item Name="NICMOS.READOUT.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.READOUT.ctl"/>
-			<Item Name="NICMOS.FILTERCOMMAND.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.FILTERCOMMAND.ctl"/>
-			<Item Name="NICMOS.FILTER.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.FILTER.ctl"/>
-			<Item Name="NicmosStop.vi" Type="VI" URL="../../Instruments/Nicmos/Clients/NicmosStop.vi"/>
-			<Item Name="NICMOS.STATE.ctl" Type="VI" URL="../../Instruments/Nicmos/Controls/NICMOS.STATE.ctl"/>
-			<Item Name="NicmosSetReadout.vi" Type="VI" URL="../../Instruments/Nicmos/Clients/NicmosSetReadout.vi"/>
-			<Item Name="Occurence-Wait.vi" Type="VI" URL="../../Instruments/Process/Occurence-Wait.vi"/>
-			<Item Name="ComputePiezoParameters.vi" Type="VI" URL="../../Instruments/FringeScanner/ComputePiezoParameters.vi"/>
-			<Item Name="PIEZO.WAVE.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.WAVE.ctl"/>
-			<Item Name="PiezoStart.vi" Type="VI" URL="../../Instruments/Piezo/Clients/PiezoStart.vi"/>
-			<Item Name="PIEZO.STATE.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.STATE.ctl"/>
-			<Item Name="PIEZO.COMMAND.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.COMMAND.ctl"/>
-			<Item Name="PIEZO.COMMANDBASIC.ctl" Type="VI" URL="../../Instruments/Piezo/Controls/PIEZO.COMMANDBASIC.ctl"/>
-			<Item Name="PiezoStop.vi" Type="VI" URL="../../Instruments/Piezo/Clients/PiezoStop.vi"/>
+			<Item Name="StarAstrometricEntry.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/StarAstrometricEntry.ctl"/>
+			<Item Name="SiteInformation.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/SiteInformation.ctl"/>
+			<Item Name="Baseline.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/Baseline.ctl"/>
+			<Item Name="DelayTarget.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/DelayTarget.ctl"/>
+			<Item Name="lvanlys.dll" Type="Document" URL="../../../Program Files/National Instruments/LabVIEW 2009/resource/lvanlys.dll"/>
+			<Item Name="CrossProduct.vi" Type="VI" URL="../../Instruments/DelayGenerator/Math/CrossProduct.vi"/>
+			<Item Name="equ2hor.vi" Type="VI" URL="../../Instruments/DelayGenerator/Novas-C/equ2hor.vi"/>
+			<Item Name="novas-dll.dll" Type="Document" URL="../../Instruments/DelayGenerator/Novas-C/novas-dll.dll"/>
+			<Item Name="TimeStampToJulianDate.vi" Type="VI" URL="../../Instruments/DelayGenerator/Novas-C/TimeStampToJulianDate.vi"/>
+			<Item Name="topo_star.vi" Type="VI" URL="../../Instruments/DelayGenerator/Novas-C/topo_star.vi"/>
+			<Item Name="ProcessState-Starting.vi" Type="VI" URL="../../Instruments/Process/ProcessState-Starting.vi"/>
+			<Item Name="ProcessControl-WaitOnStop.vi" Type="VI" URL="../../Instruments/Process/ProcessControl-WaitOnStop.vi"/>
+			<Item Name="DelayGeneratorOpenSynchronization.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGeneratorOpenSynchronization.vi"/>
+			<Item Name="DelayGeneratorSynchro.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/DelayGeneratorSynchro.ctl"/>
+			<Item Name="DelayGeneratorCommand.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/DelayGeneratorCommand.ctl"/>
+			<Item Name="DelayGeneratorState.ctl" Type="VI" URL="../../Instruments/DelayGenerator/Controls/DelayGeneratorState.ctl"/>
+			<Item Name="AerotechTarget.ctl" Type="VI" URL="../../Instruments/Aerotech/Controls/AerotechTarget.ctl"/>
+			<Item Name="ProcessState-Stopped.vi" Type="VI" URL="../../Instruments/Process/ProcessState-Stopped.vi"/>
+			<Item Name="ProcessState-Stopping.vi" Type="VI" URL="../../Instruments/Process/ProcessState-Stopping.vi"/>
+			<Item Name="ProcessState-Running.vi" Type="VI" URL="../../Instruments/Process/ProcessState-Running.vi"/>
+			<Item Name="DelayGeneratorCloseSynchronization.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGeneratorCloseSynchronization.vi"/>
+			<Item Name="DelayGeneratorIdle.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorIdle.vi"/>
+			<Item Name="DelayGeneratorGetState.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorGetState.vi"/>
+			<Item Name="DelayGeneratorTrack.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorTrack.vi"/>
+			<Item Name="AerotechGetState.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechGetState.vi"/>
+			<Item Name="AerotechState.ctl" Type="VI" URL="../../Instruments/Aerotech/Controls/AerotechState.ctl"/>
+			<Item Name="AerotechTrack.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechTrack.vi"/>
+			<Item Name="AerotechCommand.ctl" Type="VI" URL="../../Instruments/Aerotech/Controls/AerotechCommand.ctl"/>
+			<Item Name="AerotechStop.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechStop.vi"/>
+			<Item Name="AerotechHome.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechHome.vi"/>
+			<Item Name="AerotechPosition.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechPosition.vi"/>
+			<Item Name="DelayGenerator-StaticBaseline.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGenerator-StaticBaseline.vi"/>
+			<Item Name="DelayGenerator-CentralCarriage.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGenerator-CentralCarriage.vi"/>
+			<Item Name="DelayGenerator-FringeScannerOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Controller/DelayGenerator-FringeScannerOffset.vi"/>
+			<Item Name="AerotechGetTarget.vi" Type="VI" URL="../../Instruments/Aerotech/Clients/AerotechGetTarget.vi"/>
+			<Item Name="DelayGeneratorSetOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorSetOffset.vi"/>
+			<Item Name="FringeTrackerInfo.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringeTrackerInfo.ctl"/>
+			<Item Name="FringeTracker-GetState.vi" Type="VI" URL="../../Instruments/FringeTracker/Clients/FringeTracker-GetState.vi"/>
+			<Item Name="FringeTrackerState.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringeTrackerState.ctl"/>
+			<Item Name="FringeTracker-Idle.vi" Type="VI" URL="../../Instruments/FringeTracker/Clients/FringeTracker-Idle.vi"/>
+			<Item Name="FringTrackerCommand.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringTrackerCommand.ctl"/>
+			<Item Name="FringeTrackerData.ctl" Type="VI" URL="../../Instruments/FringeTracker/Controls/FringeTrackerData.ctl"/>
+			<Item Name="FringeTracker-Scan.vi" Type="VI" URL="../../Instruments/FringeTracker/Clients/FringeTracker-Scan.vi"/>
+			<Item Name="DelayGeneratorGetOffset.vi" Type="VI" URL="../../Instruments/DelayGenerator/Clients/DelayGeneratorGetOffset.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>
