@@ -32,5 +32,5 @@
 		<Property Name="typeDefPath" Type="Str"></Property>
 		<Property Name="typeDesc" Type="Bin">#1#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!!J*1!!!!E!A!!!!!!"!!V!#A!'2'^V9GRF!!!"!!!!!!!!!!!!!!!!!!!!!!!!</Property>
 	</Item>
-	<Item Name="FringeScanner.vi" Type="VI" URL="../FringeScanner.vi"/>
+	<Item Name="FringeScannerGUI.vi" Type="VI" URL="../FringeScannerGUI.vi"/>
 </Library>
