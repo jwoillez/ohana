@@ -34,4 +34,5 @@
 		<Property Name="typeDesc" Type="Bin">#1#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!%V-1%!!!E!A!!!!!!+!""!-0````](9W&amp;U97RP:Q!31$$`````#(.U98*O97VF!!!21!-!#H.U98*O&gt;7VC:8)!!!^!'A!"!!)!!1!#=G%!!!^!'A!"!!!!!1!$:'6D!"&gt;!'A!#!!!!!1!#``]!"X"S&lt;WVP=G%!'5!;!!)!!!!"!!,``Q!)=(*P&lt;7^E:7-!!"6!'A!"!!!!!1!)='&amp;S97RM98A!!"^!'A!#!!,``Q!$!!%!$H*B:'FB&lt;(:F&lt;'^D;82Z!!!Q1&amp;!!#1!!!!%!!A!$!!1!"1!'!!=!#":4&gt;'&amp;S)%&amp;T&gt;(*P&lt;76U=GFD)%6O&gt;(*Z!!!"!!E!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</Property>
 	</Item>
 	<Item Name="DelayGeneratorGUI.vi" Type="VI" URL="../DelayGeneratorGUI.vi"/>
+	<Item Name="SearchCommandGUI.vi" Type="VI" URL="../SearchCommandGUI.vi"/>
 </Library>
