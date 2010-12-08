@@ -35,4 +35,5 @@
 	</Item>
 	<Item Name="DelayGeneratorGUI.vi" Type="VI" URL="../DelayGeneratorGUI.vi"/>
 	<Item Name="SearchCommandGUI.vi" Type="VI" URL="../SearchCommandGUI.vi"/>
+	<Item Name="SpiralSearchForObserver.vi" Type="VI" URL="../SpiralSearchForObserver.vi"/>
 </Library>
