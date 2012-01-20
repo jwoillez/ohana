@@ -17,8 +17,12 @@
 		<Item Name="Tools" Type="Folder">
 			<Item Name="Panel-NicmosPiezoAddons.vi" Type="VI" URL="../../Procedures/Panel-NicmosPiezoAddons.vi"/>
 			<Item Name="Panel-LAR.vi" Type="VI" URL="../../Procedures/Panel-LAR.vi"/>
+			<Item Name="Panel-BC.vi" Type="VI" URL="../../Procedures/Panel-BC.vi"/>
 			<Item Name="RasterScan.vi" Type="VI" URL="../../Instruments/RasterScan/RasterScan.vi"/>
 			<Item Name="Nicmos_LogTemperature.vi" Type="VI" URL="../../Instruments/Nicmos/Nicmos_LogTemperature.vi"/>
+			<Item Name="Panel-FringeProcessor-1.vi" Type="VI" URL="../../Procedures/Panel-FringeProcessor-1.vi"/>
+			<Item Name="Panel-FringeProcessor-2.vi" Type="VI" URL="../../Procedures/Panel-FringeProcessor-2.vi"/>
+			<Item Name="Panel-FringeProcessor-4.vi" Type="VI" URL="../../Procedures/Panel-FringeProcessor-4.vi"/>
 		</Item>
 		<Item Name="Server" Type="Folder">
 			<Item Name="ServerGUI.vi" Type="VI" URL="../../Server/ServerGUI.vi"/>
@@ -33,6 +37,8 @@
 		<Item Name="CentralCarriage.lvlib" Type="Library" URL="../../Instruments/CentralCarriage/CentralCarriage.lvlib"/>
 		<Item Name="DelayGenerator.lvlib" Type="Library" URL="../../Instruments/DelayGenerator/DelayGenerator.lvlib"/>
 		<Item Name="Raster scans &apos;OHANA IKI.vi" Type="VI" URL="../../../Ohana_Development/Data/Donnees Avril 2011/Raster scans &apos;OHANA IKI.vi"/>
+		<Item Name="NicmosGUI.vi" Type="VI" URL="../../Instruments/Nicmos/NicmosGUI.vi"/>
+		<Item Name="PSD.vi" Type="VI" URL="../../Data/PSD.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
 				<Item Name="Close Generic Object Refnum__ogtk.vi" Type="VI" URL="/&lt;userlib&gt;/_OpenG.lib/appcontrol/appcontrol.llb/Close Generic Object Refnum__ogtk.vi"/>
@@ -377,6 +383,8 @@
 				<Item Name="ex_createNewChannelsTDMS.vi" Type="VI" URL="/&lt;vilib&gt;/express/express shared/ex_TDMS/ex_createNewChannelsTDMS.vi"/>
 				<Item Name="TDMSAddBlankElem1d.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/tdmsutil.llb/TDMSAddBlankElem1d.vi"/>
 				<Item Name="Waveform Array To Dynamic.vi" Type="VI" URL="/&lt;vilib&gt;/express/express shared/transition.llb/Waveform Array To Dynamic.vi"/>
+				<Item Name="NI_MAPro.lvlib" Type="Library" URL="/&lt;vilib&gt;/measure/NI_MAPro.lvlib"/>
+				<Item Name="NI_MABase.lvlib" Type="Library" URL="/&lt;vilib&gt;/measure/NI_MABase.lvlib"/>
 			</Item>
 			<Item Name="PathConfigurations.vi" Type="VI" URL="../../Instruments/Files/PathConfigurations.vi"/>
 			<Item Name="ServerRunProcess.vi" Type="VI" URL="../../Server/Ressources/ServerRunProcess.vi"/>
@@ -474,7 +482,9 @@
 			<Item Name="IkiGetPosition.vi" Type="VI" URL="../../Instruments/Iki/IkiGetPosition.vi"/>
 			<Item Name="IkiSetPosition.vi" Type="VI" URL="../../Instruments/Iki/IkiSetPosition.vi"/>
 			<Item Name="IkiClose.vi" Type="VI" URL="../../Instruments/Iki/IkiClose.vi"/>
+			<Item Name="Motor-HandPaddle2D.vi" Type="VI" URL="../../Procedures/Motor-HandPaddle2D.vi"/>
 			<Item Name="lvStorage.dll" Type="Document" URL="../../../Program Files/National Instruments/LabVIEW 2009/resource/objmgr/lvStorage.dll"/>
+			<Item Name="Motor-HandPaddle3D.vi" Type="VI" URL="../../Procedures/Motor-HandPaddle3D.vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build"/>
 	</Item>
