@@ -1,0 +1,24 @@
+en
+ac30
+sp2000
+answ0
+hn2
+jpf1
+lr-120000
+m
+delay100
+a1
+gohoseq
+encmod
+hallspeed
+ac300
+sp200
+la100
+np
+m
+answ1
+ho0
+ac20
+sp4000
+di
+end: 127
