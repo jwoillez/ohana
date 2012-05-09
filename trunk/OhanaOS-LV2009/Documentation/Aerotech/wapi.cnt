@@ -1,0 +1,264 @@
+:Base wapi.HLP
+:Title UNIDEX 500 WAPI CUSTOM PROGRAMMING HELP
+1 GETTING STARTED
+2 Introduction/Basics=INTRODUCTION_BASICS@wapi.hlp
+2 Device Driver Information=Device_Driver_Information@wapi.hlp
+2 Registry Information=Registry_Information@wapi.hlp
+2 Using WAPI Functions in a C/C++ Project=Using_WAPI_functions_in_a_C_C_Project@wapi.hlp
+2 Using WAPI Functions in a Visual Basic Project=Using_WAPI_Functions_in_a_Visual_Basic_Project@wapi.hlp
+2 Using WAPI Functions in a Delphi Project=Using_WAPI_Functions_in_a_Delphi_Project@wapi.hlp
+2 Using The U500 LabVIEW Drivers=USING_THE_U500_LABVIEW_DRIVERS@wapi.hlp
+1 WAPI FUNCTIONS
+2 Initialization Functions
+3 WAPIAerOpen=WAPIAerOpen@wapi.hlp
+3 WAPIAerClose=WAPIAerClose@wapi.hlp
+3 WAPIAerInitialize=WAPIAerInitialize@wapi.hlp
+3 WAPIAerCheckInitz=WAPIAerCheckInitz@wapi.hlp
+3 WAPIAerSoftwareInitialize=WAPIAerSoftwareInitialize@wapi.hlp
+3 WAPILoadCalFile=WAPILoadCalFile@wapi.hlp
+2 Motion / CNC
+3 WAPIAerAbort=WAPIAerAbort@wapi.hlp
+3 WAPIAerPause=WAPIAerPause@wapi.hlp
+3 WAPIAerSend=WAPIAerSend@wapi.hlp
+3 WAPIAerSetPause=WAPIAerSetPause@wapi.hlp
+2 Error Checking / Handling
+3 WAPIErrorToAscii=WAPIErrorToAscii@wapi.hlp
+3 WAPIAerAxisErrorToAscii=WAPIAerAxisErrorToAscii@wapi.hlp
+3 WAPIAerCheckStatus=WAPIAerCheckStatus@wapi.hlp
+3 WAPIAerGetQlibError=WAPIAerGetQlibError@wapi.hlp
+3 WAPIAerReadStatus=WAPIAerReadStatus@wapi.hlp
+3 WAPIAerFaultAck=WAPIAerFaultAck@wapi.hlp
+2 Reading Status, Position, Variables, and Inputs
+3 WAPIAerCheckStatus=WAPIAerCheckStatus@wapi.hlp
+3 WAPIAerReadStatus=WAPIAerReadStatus@wapi.hlp
+3 WAPIGetDiag=WAPIGetDiag@wapi.hlp
+3 WAPIAerSetAtd=WAPIAerSetAtd@wapi.hlp
+3 WAPIAerReadAtd=WAPIAerReadAtd@wapi.hlp
+3 WAPIAerSetVelocityTimebase=WAPIAerSetVelocityTimebase@wapi.hlp
+3 WAPIAerSetVelocityTracking=WAPIAerSetVelocityTracking@wapi.hlp
+3 WAPIAerReadVelocity=WAPIAerReadVelocity@wapi.hlp
+3 WAPIAerReadPosition=WAPIAerReadPosition@wapi.hlp
+3 WAPIAerReadVariable=WAPIAerReadVariable@wapi.hlp
+3 WAPIAerReadiSBX=WAPIAerReadiSBX@wapi.hlp
+3 WAPIAerWriteiSBX=WAPIAerWriteiSBX@wapi.hlp
+2 Data Collection
+3 WAPIAerScopeCommand=WAPIAerScopeCommand@wapi.hlp
+3 WAPIAerScopeDump=WAPIAerScopeDump@wapi.hlp
+2 PCI Configuration Functions
+3 WAPIAerEditFlash=WAPIAerEditFlash@wapi.hlp
+3 WAPIAerSaveFlash=WAPIAerSaveFlash@wapi.hlp
+3 WAPIAerReadOptionCode=WAPIAerReadOptionCode@wapi.hlp
+3 WAPIAerReadFpgaSetupCode=WAPIAerReadFpgaSetupCode@wapi.hlp
+3 WAPIAerWriteFpgaSetupCode=WAPIAerWriteFpgaSetupCode@wapi.hlp
+2 PCI Position Capture Functions
+3 WAPIAerPosgrabDisable=WAPIAerPosgrabDisable@wapi.hlp
+3 WAPIAerPosgrabHardwareEnable=WAPIAerPosgrabHardwareEnable@wapi.hlp
+3 WAPIAerPosgrabReadArraySize=WAPIAerPosgrabReadArraySize@wapi.hlp
+3 WAPIAerPosgrabReadIndex=WAPIAerPosgrabReadIndex@wapi.hlp
+3 WAPIAerPosgrabReadPosition=WAPIAerPosgrabReadPosition@wapi.hlp
+3 WAPIAerPosgrabResetIndex=WAPIAerPosgrabResetIndex@wapi.hlp
+3 WAPIAerPosgrabScanEnable=WAPIAerPosgrabScanEnable@wapi.hlp
+2 Parameter Functions
+3 WAPIAerOpenParam=WAPIAerOpenParam@wapi.hlp
+3 WAPIAerReadParam=WAPIAerReadParam@wapi.hlp
+3 WAPIAerWriteParam=WAPIAerWriteParam@wapi.hlp
+3 WAPIAerSaveParam=WAPIAerSaveParam@wapi.hlp
+2 Interrupt Handling
+3 WAPIAerCreateThreadEx=WAPIAerCreateThreadEx@wapi.hlp
+3 WAPIAerTerminateThreadEx=WAPIAerTerminateThreadEx@wapi.hlp
+3 WAPIAerCreateEvent=WAPIAerCreateEvent@wapi.hlp
+3 WAPIAerCloseEvent=WAPIAerCloseEvent@wapi.hlp
+2 Executing CNC / G-Code Programs
+3 WAPIAerLoadProgram=WAPIAerLoadProgram@wapi.hlp
+3 WAPIAerUnloadProgram=WAPIAerUnloadProgram@wapi.hlp
+3 WAPIAerStepProgram=WAPIAerStepProgram@wapi.hlp
+3 WAPIAerSetProgLine=WAPIAerSetProgLine@wapi.hlp
+3 WAPIAerGetProgName=WAPIAerGetProgName@wapi.hlp
+3 WAPIAerGetProgLine=WAPIAerGetProgLine@wapi.hlp
+3 WAPIAerGetProgErrMsg=WAPIAerGetProgErrMsg@wapi.hlp
+3 WAPIAerGetProgAuxCode=WAPIAerGetProgAuxCode@wapi.hlp
+3 WAPIAerGetPauseFlag=WAPIAerGetPauseFlag@wapi.hlp
+3 WAPIAerGetMsgInfo=WAPIAerGetMsgInfo@wapi.hlp
+3 WAPIAerGetCycleFlag=WAPIAerGetCycleFlag@wapi.hlp
+2 PSO Functions
+3 U500 PCI Only
+4 WAPIAerSingleSetup=WAPIAerSingleSetup@wapi.hlp
+4 WAPIAerDualSetup=WAPIAerDualSetup@wapi.hlp
+4 WAPIAerAnalogVector=WAPIAerAnalogVector@wapi.hlp
+3 U500 ISA Only
+4 WAPIAerInitializePSO=WAPIAerInitializePSO@wapi.hlp
+4 WAPIPsoGetDiag=WAPIPsoGetDiag@wapi.hlp
+2 U500 Memory Functions
+3 WAPIAerDSPMemRead=WAPIAerDSPMemRead@wapi.hlp
+3 WAPIAerDSPMemWrite=WAPIAerDSPMemWrite@wapi.hlp
+2 FiberAlign Functions
+3 Fiber Align Parameter Functions
+4 WAPIAerFiberGetParam=WAPIAerFiberGetParam@wapi.hlp
+4 WAPIAerFiberSetParam=WAPIAerFiberSetParam@wapi.hlp
+3 Alignment Functions
+4 WAPIAerFiberSpiralFine=WAPIAerFiberSpiralFine@wapi.hlp
+4 WAPIAerFiberSpiralRough=WAPIAerFiberSpiralRough@wapi.hlp
+4 WAPIAerFiberFastAlign=WAPIAerFiberFastAlign@wapi.hlp
+4 WAPIAerFiberFastAlign3D=WAPIAerFiberFastAlign3D@wapi.hlp
+4 WAPIAerFiberFastAlign4D=WAPIAerFiberFastAlign4D@wapi.hlp
+4 WAPIAerFiberCentroid=WAPIAerFiberCentroid@wapi.hlp
+4 WAPIAerFiberGeoCenter2D=WAPIAerFiberGeoCenter2D@wapi.hlp
+4 WAPIAerFiberHillClimb=WAPIAerFiberHillClimb@wapi.hlp
+3 Status and Data Collection
+4 WAPIAerFiberCheckStatus=WAPIAerFiberCheckStatus@wapi.hlp
+4 WAPIAerFiberFreeMatrix=WAPIAerFiberFreeMatrix@wapi.hlp
+4 WAPIAerFiberGetAdval=WAPIAerFiberGetAdval@wapi.hlp
+4 WAPIAerFiberGetGeoCoord=WAPIAerFiberGetGeoCoord@wapi.hlp
+4 WAPIAerFiberGetNumPnts=WAPIAerFiberGetNumPnts@wapi.hlp
+4 WAPIAerFiberGetSavedData1D=WAPIAerFiberGetSavedData1D@wapi.hlp
+4 WAPIAerFiberSetDataSaveOn=WAPIAerFiberSetDataSaveOn@wapi.hlp
+2 Using the CLK/DIR (Axes 5 - 8) on the U500 PCI ULTRA
+3 WAPIAerCheckStatus2=WAPIAerCheckStatus2@wapi.hlp
+3 WAPIAerReadPosition2=WAPIAerReadPosition2@wapi.hlp
+3 WAPIAerReadStatus2=WAPIAerReadStatus2@wapi.hlp
+2 GPIB Functions
+3 WAPIGPIBClose=WAPIGPIBClose@wapi.hlp
+3 WAPIGPIBOpen=WAPIGPIBOpen@wapi.hlp
+3 WAPIGPIBReadNumber=WAPIGPIBReadNumber@wapi.hlp
+3 WAPIGPIBReadString=WAPIGPIBReadString@wapi.hlp
+3 WAPIGPIBSetBytesToRead=WAPIGPIBSetBytesToRead@wapi.hlp
+3 WAPIGPIBSetDev=WAPIGPIBSetDev@wapi.hlp
+3 WAPIGPIBSetDevOffline=WAPIGPIBSetDevOffline@wapi.hlp
+3 WAPIGPIBSetParams=WAPIGPIBSetParams@wapi.hlp
+3 WAPIGPIBSetWriteString=WAPIGPIBSetWriteString@wapi.hlp
+3 WAPIGPIBWriteString=WAPIGPIBWriteString@wapi.hlp
+2 Miscellaneous
+3 WAPIGetBoardType=WAPIGetBoardType@wapi.hlp
+3 WAPIAerGetQlibVersion=WAPIAerGetQlibVersion@wapi.hlp
+3 WAPIAerGetDrvVersion=WAPIAerGetDrvVersion@wapi.hlp
+3 WAPIAerGetWAPIVersion=WAPIAerGetWAPIVersion@wapi.hlp
+3 WAPIGetUbj=WAPIGetUbj@wapi.hlp
+3 WAPIGetUbFerd=WAPIGetUbFerd@wapi.hlp
+3 WAPIGetAxis=WAPIGetAxis@wapi.hlp
+3 WAPIGetPlane=WAPIGetPlane@wapi.hlp
+3 WAPIGetProgInfo=WAPIGetProgInfo@wapi.hlp
+3 WAPICommReady=WAPICommReady@wapi.hlp
+1 WAPI FUNCTIONS LISTED ALPHABETICALLY
+2 WAPIAerAbort=WAPIAerAbort@wapi.hlp
+2 WAPIAerAnalogVector=WAPIAerAnalogVector@wapi.hlp
+2 WAPIAerAxisErrorToAscii=WAPIAerAxisErrorToAscii@wapi.hlp
+2 WAPIAerCheckInitz=WAPIAerCheckInitz@wapi.hlp
+2 WAPIAerCheckStatus=WAPIAerCheckStatus@wapi.hlp
+2 WAPIAerCheckStatus2=WAPIAerCheckStatus2@wapi.hlp
+2 WAPIAerClose=WAPIAerClose@wapi.hlp
+2 WAPIAerCloseEvent=WAPIAerCloseEvent@wapi.hlp
+2 WAPIAerCreateEvent=WAPIAerCreateEvent@wapi.hlp
+2 WAPIAerCreateThreadEx=WAPIAerCreateThreadEx@wapi.hlp
+2 WAPIAerDualSetup=WAPIAerDualSetup@wapi.hlp
+2 WAPIAerDSPMemRead=WAPIAerDSPMemRead@wapi.hlp
+2 WAPIAerDSPMemWrite=WAPIAerDSPMemWrite@wapi.hlp
+2 WAPIAerEditFlash=WAPIAerEditFlash@wapi.hlp
+2 WAPIAerFaultAck=WAPIAerFaultAck@wapi.hlp
+2 WAPIAerFiberCentroid=WAPIAerFiberCentroid@wapi.hlp
+2 WAPIAerFiberCheckStatus=WAPIAerFiberCheckStatus@wapi.hlp
+2 WAPIAerFiberFastAlign=WAPIAerFiberFastAlign@wapi.hlp
+2 WAPIAerFiberFastAlign3D=WAPIAerFiberFastAlign3D@wapi.hlp
+2 WAPIAerFiberFastAlign4D=WAPIAerFiberFastAlign4D@wapi.hlp
+2 WAPIAerFiberFreeMatrix=WAPIAerFiberFreeMatrix@wapi.hlp
+2 WAPIAerFiberGeoCenter2D=WAPIAerFiberGeoCenter2D@wapi.hlp
+2 WAPIAerFiberGetAdval=WAPIAerFiberGetAdval@wapi.hlp
+2 WAPIAerFiberGetGeoCoord=WAPIAerFiberGetGeoCoord@wapi.hlp
+2 WAPIAerFiberGetNumPnts=WAPIAerFiberGetNumPnts@wapi.hlp
+2 WAPIAerFiberGetParam=WAPIAerFiberGetParam@wapi.hlp
+2 WAPIAerFiberGetSavedData1D=WAPIAerFiberGetSavedData1D@wapi.hlp
+2 WAPIAerFiberHillClimb=WAPIAerFiberHillClimb@wapi.hlp
+2 WAPIAerFiberSetDataSaveOn=WAPIAerFiberSetDataSaveOn@wapi.hlp
+2 WAPIAerFiberSetParam=WAPIAerFiberSetParam@wapi.hlp
+2 WAPIAerFiberSpiralFine=WAPIAerFiberSpiralFine@wapi.hlp
+2 WAPIAerFiberSpiralRough=WAPIAerFiberSpiralRough@wapi.hlp
+2 WAPIAerGetCycleFlag=WAPIAerGetCycleFlag@wapi.hlp
+2 WAPIAerGetDrvVersion=WAPIAerGetDrvVersion@wapi.hlp
+2 WAPIAerGetMsgInfo=WAPIAerGetMsgInfo@wapi.hlp
+2 WAPIAerGetPauseFlag=WAPIAerGetPauseFlag@wapi.hlp
+2 WAPIAerGetProgAuxCode=WAPIAerGetProgAuxCode@wapi.hlp
+2 WAPIAerGetProgErrMsg=WAPIAerGetProgErrMsg@wapi.hlp
+2 WAPIAerGetProgLine=WAPIAerGetProgLine@wapi.hlp
+2 WAPIAerGetProgName=WAPIAerGetProgName@wapi.hlp
+2 WAPIAerGetQlibError=WAPIAerGetQlibError@wapi.hlp
+2 WAPIAerGetQlibVersion=WAPIAerGetQlibVersion@wapi.hlp
+2 WAPIAerGetWAPIVersion=WAPIAerGetWAPIVersion@wapi.hlp
+2 WAPIAerInitialize=WAPIAerInitialize@wapi.hlp
+2 WAPIAerInitializePSO=WAPIAerInitializePSO@wapi.hlp
+2 WAPIAerInPosition=WAPIAerInPosition@wapi.hlp
+2 WAPIAerLoadProgram=WAPIAerLoadProgram@wapi.hlp
+2 WAPIAerOpen=WAPIAerOpen@wapi.hlp
+2 WAPIAerOpenParam=WAPIAerOpenParam@wapi.hlp
+2 WAPIAerPause=WAPIAerPause@wapi.hlp
+2 WAPIAerPosgrabDisable=WAPIAerPosgrabDisable@wapi.hlp
+2 WAPIAerPosgrabHardwareEnable=WAPIAerPosgrabHardwareEnable@wapi.hlp
+2 WAPIAerPosgrabReadArraySize=WAPIAerPosgrabReadArraySize@wapi.hlp
+2 WAPIAerPosgrabReadIndex=WAPIAerPosgrabReadIndex@wapi.hlp
+2 WAPIAerPosgrabReadPosition=WAPIAerPosgrabReadPosition@wapi.hlp
+2 WAPIAerPosgrabResetIndex=WAPIAerPosgrabResetIndex@wapi.hlp
+2 WAPIAerPosgrabScanEnable=WAPIAerPosgrabScanEnable@wapi.hlp
+2 WAPIAerReadAtd=WAPIAerReadAtd@wapi.hlp
+2 WAPIAerReadFpgaSetupCode=WAPIAerReadFpgaSetupCode@wapi.hlp
+2 WAPIAerReadiSBX=WAPIAerReadiSBX@wapi.hlp
+2 WAPIAerReadOptionCode=WAPIAerReadOptionCode@wapi.hlp
+2 WAPIAerReadParam=WAPIAerReadParam@wapi.hlp
+2 WAPIAerReadPlaneFeedrate=WAPIAerReadPlaneFeedrate@wapi.hlp
+2 WAPIAerReadPosition=WAPIAerReadPosition@wapi.hlp
+2 WAPIAerReadPosition2=WAPIAerReadPosition2@wapi.hlp
+2 WAPIAerReadPosition_r=WAPIAerReadPosition_r@wapi.hlp
+2 WAPIAerReadVariable=WAPIAerReadVariable@wapi.hlp
+2 WAPIAerReadVariable_r=WAPIAerReadVariable_r@wapi.hlp
+2 WAPIAerReadVelocity=WAPIAerReadVelocity@wapi.hlp
+2 WAPIAerReadStatus=WAPIAerReadStatus@wapi.hlp
+2 WAPIAerReadStatus2=WAPIAerReadStatus2@wapi.hlp
+2 WAPIAerSaveFlash=WAPIAerSaveFlash@wapi.hlp
+2 WAPIAerSaveParam=WAPIAerSaveParam@wapi.hlp
+2 WAPIAerScopeCommand=WAPIAerScopeCommand@wapi.hlp
+2 WAPIAerScopeDump=WAPIAerScopeDump@wapi.hlp
+2 WAPIAerSend=WAPIAerSend@wapi.hlp
+2 WAPIAerSetAtd=WAPIAerSetAtd@wapi.hlp
+2 WAPIAerSetPause=WAPIAerSetPause@wapi.hlp
+2 WAPIAerSetProgLine=WAPIAerSetProgLine@wapi.hlp
+2 WAPIAerSetVelocityTimebase=WAPIAerSetVelocityTimebase@wapi.hlp
+2 WAPIAerSetVelocityTracking=WAPIAerSetVelocityTracking@wapi.hlp
+2 WAPIAerSingleSetup=WAPIAerSingleSetup@wapi.hlp
+2 WAPIAerSoftwareInitialize=WAPIAerSoftwareInitialize@wapi.hlp
+2 WAPIAerStepProgram=WAPIAerStepProgram@wapi.hlp
+2 WAPIAerTerminateThreadEx=WAPIAerTerminateThreadEx@wapi.hlp
+2 WAPIAerUnloadProgram=WAPIAerUnloadProgram@wapi.hlp
+2 WAPIAerWaitForInterrupt=WAPIAerWaitForInterrupt@wapi.hlp
+2 WAPIAerWriteFpgaSetupCode=WAPIAerWriteFpgaSetupCode@wapi.hlp
+2 WAPIAerWriteiSBX=WAPIAerWriteiSBX@wapi.hlp
+2 WAPIAerWriteParam=WAPIAerWriteParam@wapi.hlp
+2 WAPICommReady=WAPICommReady@wapi.hlp
+2 WAPIErrorToAscii=WAPIErrorToAscii@wapi.hlp
+2 WAPIGetAxis=WAPIGetAxis@wapi.hlp
+2 WAPIGetBoardType=WAPIGetBoardType@wapi.hlp
+2 WAPIGetDiag=WAPIGetDiag@wapi.hlp
+2 WAPIGetPlane=WAPIGetPlane@wapi.hlp
+2 WAPIGetProgInfo=WAPIGetProgInfo@wapi.hlp
+2 WAPIGetUbFerd=WAPIGetUbFerd@wapi.hlp
+2 WAPIGetUbj=WAPIGetUbj@wapi.hlp
+2 WAPIGPIBClose=WAPIGPIBClose@wapi.hlp
+2 WAPIGPIBOpen=WAPIGPIBOpen@wapi.hlp
+2 WAPIGPIBReadNumber=WAPIGPIBReadNumber@wapi.hlp
+2 WAPIGPIBReadString=WAPIGPIBReadString@wapi.hlp
+2 WAPIGPIBSetBytesToRead=WAPIGPIBSetBytesToRead@wapi.hlp
+2 WAPIGPIBSetDev=WAPIGPIBSetDev@wapi.hlp
+2 WAPIGPIBSetDevOffline=WAPIGPIBSetDevOffline@wapi.hlp
+2 WAPIGPIBSetParams=WAPIGPIBSetParams@wapi.hlp
+2 WAPIGPIBSetWriteString=WAPIGPIBSetWriteString@wapi.hlp
+2 WAPIGPIBWriteString=WAPIGPIBWriteString@wapi.hlp
+2 WAPILoadCalFile=WAPILoadCalFile@wapi.hlp
+2 WAPIPsoGetDiag=WAPIPsoGetDiag@wapi.hlp
+1 EXAMPLES
+2 EXAMPLE 1 - BASICS=EXAMPLE_1_BASICS@wapi.hlp
+2 EXAMPLE 2 - SCOPE FUNCTIONS=EXAMPLE_2_SCOPE_FUNCTIONS@wapi.hlp
+2 EXAMPLE 3 - ADDITIONAL TOPICS=EXAMPLE_3_Additional_Topics@wapi.hlp
+2 EXAMPLE 4 - PARAMETER FUNCTIONS=EXAMPLE_4_PARAMETER_FUNCTION@wapi.hlp
+2 EXAMPLE 5 - PROGRAM FUNCTIONS=EXAMPLE_5_PROGRAM_FUNCTIONS@wapi.hlp
+2 EXAMPLE 6 - INTERRUPT FUNCTIONS=EXAMPLE_6_INTERRUPT_FUNCTIONS@wapi.hlp
+2 EXAMPLE 7 - MULTIPLE PROGRAM EXECUTION EXAMPLE=EXAMPLE_7_Multiple_Program_Example@wapi.hlp
+2 EXAMPLE 8 - PCI PULSE OUTPUT EXAMPLE=EXAMPLE_8_PCI_Pulse_Output_Example@wapi.hlp
+2 EXAMPLE 9 - FIBER ALIGN FUNCTIONS=Example_9_Fiber_Align_Functions@wapi.hlp
+1 LabVIEW HELP
+2 Using The U500 LabVIEW Drivers=USING_THE_U500_LABVIEW_DRIVERS@wapi.hlp
