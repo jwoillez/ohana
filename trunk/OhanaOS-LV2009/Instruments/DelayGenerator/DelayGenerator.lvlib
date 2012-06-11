@@ -15,6 +15,16 @@
 		<Property Name="typeDefPath" Type="Str"></Property>
 		<Property Name="typeDesc" Type="Bin">#1#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!"T&lt;Q!!!!E!A!!!!!!%!"&amp;!'A!"!!-!!1!%27&amp;T&gt;!!!%5!;!!%!!Q!"!!6/&lt;X*U;!!01"I!!1!$!!%!!F6Q!!!71&amp;!!!Q!!!!%!!AB#98.F&lt;'FO:1!!!1!$!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</Property>
 	</Item>
+	<Item Name="DelayTarget" Type="Variable">
+		<Property Name="featurePacks" Type="Str">Network</Property>
+		<Property Name="Network:SingleWriter" Type="Str">True</Property>
+		<Property Name="Network:UseBinding" Type="Str">False</Property>
+		<Property Name="Network:UseBuffering" Type="Str">False</Property>
+		<Property Name="path" Type="Str"></Property>
+		<Property Name="type" Type="Str">Network</Property>
+		<Property Name="typeDefPath" Type="Str"></Property>
+		<Property Name="typeDesc" Type="Bin">#1#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!#'AA!!!!E!A!!!!!!%!!R!6!!'"&amp;2J&lt;75!!"6!'A!"!!-!!1!)5'^T;82J&lt;WY!!"F!'A!#!!,``Q!$!!%!#&amp;:F&lt;'^D;82Z!!!91&amp;!!!Q!!!!%!!AN%:7RB?62B=G&gt;F&gt;!!"!!-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</Property>
+	</Item>
 	<Item Name="SiteInformation" Type="Variable">
 		<Property Name="featurePacks" Type="Str">Network</Property>
 		<Property Name="Network:UseBinding" Type="Str">False</Property>
