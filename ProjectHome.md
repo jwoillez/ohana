@@ -1,0 +1,1 @@
+We are a group of astronomers working on a project to link large optical telescopes on the summit of Mauna Kea into a long baseline interferometer. The control software for the project is based on LabView. This is our repository.
